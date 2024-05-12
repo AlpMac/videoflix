@@ -1,17 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import Home from './pages/home/home.jsx';
+import Topbar from './pages/topbar/topbar.jsx';
+import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import CadastrarVideo from './pages/CadastrarVideo/CadastrarVideo.jsx';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+<>
+  <Topbar />
+  <React.Fragment>
+      <CssBaseline />
+      <Container maxWidth="lg">
+        <BrowserRouter>
+         <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cadastrar-video" element={<CadastrarVideo />} />  
+         </Routes>
+        </BrowserRouter>
+      </Container>
+    </React.Fragment> 
+  
+ </>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
