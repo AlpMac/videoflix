@@ -17,6 +17,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Drawer from '@mui/material/Drawer';
 import MenuPrincipal from '../../componentes/MenuPrincipal/MenuPrincipal.jsx';
+import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -30,7 +31,7 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: '30%',
   },
 }));
 
@@ -194,8 +195,10 @@ export default function PrimarySearchAppBar() {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
+            
           </Search>
           <Box sx={{ flexGrow: 1 }} />
+             <BannerMensagem />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">

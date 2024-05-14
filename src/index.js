@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import Home from './pages/home/home.jsx';
 import Topbar from './pages/topbar/topbar.jsx';
@@ -7,24 +7,43 @@ import Container from '@mui/material/Container';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CadastrarVideo from './pages/CadastrarVideo/CadastrarVideo.jsx';
 import MenuPrincipal from './componentes/MenuPrincipal/MenuPrincipal.jsx';
+import BotoesDeNavegacao from './componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-<>
-  <Topbar />
-  <React.Fragment>
-      <CssBaseline />
-      <Container maxWidth="lg">
-        <BrowserRouter>
-         <Routes>
-          <Route path="/" element={<Home />} />
-         
-          <Route path="/cadastrar-video" element={<CadastrarVideo />} />  
-         </Routes>
-        </BrowserRouter>
-      </Container>
-    </React.Fragment> 
-  
- </>
-);
 
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <>
+      <Topbar />
+      <React.Fragment>
+        <CssBaseline />
+        <Container maxWidth="lg">
+        <div
+            id="BotoesDeNavegacao"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '20px', // Ajuste conforme necessário
+            }}
+          >
+            <BotoesDeNavegacao />
+          </div>         
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cadastrar-video" element={<CadastrarVideo />} />
+            </Routes>
+          </BrowserRouter>
+        </Container>
+      </React.Fragment>
+    </>
+  );
+};
+
+root.render(<App />);
