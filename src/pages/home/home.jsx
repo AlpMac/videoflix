@@ -1,13 +1,16 @@
-import BotoesDeNavegacao from "../../componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao";
+import React from 'react';
+import { Container } from '@mui/material';
+import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal';
+import BotoesDeNavegacao from '../../componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao';
 
-function Home () {
+function Home() {
   return (
-    <>
-    <div>
-        <h1>Videos para Estudo</h1>
-    </div>
-    </>
-  )
+    <Container sx={{ paddingTop: '40px' }}>
+
+      <CardPrincipal />
+      {/* Outros componentes ou conteúdos aqui */}
+    </Container>
+  );
 }
 
 export default Home;
