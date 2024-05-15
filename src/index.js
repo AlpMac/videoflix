@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CadastrarVideo from './pages/CadastrarVideo/CadastrarVideo.jsx';
 import MenuPrincipal from './componentes/MenuPrincipal/MenuPrincipal.jsx';
 import BotoesDeNavegacao from './componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
+import Video from './pages/Video/Video.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -23,7 +24,7 @@ const App = () => {
       <Topbar />
       <React.Fragment>
         <CssBaseline />
-        <Container maxWidth="lg">
+        <Container maxWidth='xl'>
         <div
             id="BotoesDeNavegacao"
             style={{
@@ -38,6 +39,8 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/cadastrar-video" element={<CadastrarVideo />} />
+              <Route path="/video" element={<Video />} />
+
             </Routes>
           </BrowserRouter>
         </Container>
