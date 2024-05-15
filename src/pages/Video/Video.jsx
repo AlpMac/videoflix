@@ -14,6 +14,8 @@ import Grid from '@mui/material/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { CenterFocusStrong } from '@mui/icons-material';
+import ReactPlayer from 'react-player';
+
 
 export default function Video() {
 
@@ -33,6 +35,7 @@ export default function Video() {
             iconeCanal: 'https://source.unsplash.com/random/300x203',
             Canal: '2ºSG-PD MARCO ANTONIO',
             visualizacao: 1000,
+            url: 'https://youtu.be/wV1n1_E5AIQ',
         },
     ];
 
@@ -82,12 +85,20 @@ export default function Video() {
                                 }
                                 title={DadosdoVideo[0].Canal}
                             />
-                            <CardMedia
+                            <ReactPlayer
+                                url= {DadosdoVideo[0].url}
+                                width='100%'
+                                height='400px'
+                                controls = {true}
+                            />
+
+
+                            {/*<CardMedia id="video_principal"
                                 component="img"
                                 height="400"
                                 image={DadosdoVideo[0].imagem}
                                 alt={DadosdoVideo[0].titulo}
-                            />
+                            /> */}
                             <CardContent>
                                 <Typography variant="h5" component="div">
                                     {DadosdoVideo[0].titulo} 
