@@ -20,6 +20,7 @@ import MenuPrincipal from '../../componentes/MenuPrincipal/MenuPrincipal.jsx';
 import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
 import Popover from '@mui/material/Popover';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineRounded';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -162,8 +163,30 @@ export default function PrimarySearchAppBar() {
       }}
       open={isMenuOpenNotificacao}
       onClose={handleMenuCloseNotificacao}
+      display= 'flex'
     >
-      <MenuItem onClick={handleMenuCloseNotificacao}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuCloseNotificacao}
+       sx= {{
+        borderBottom: `1px solid`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%', // Adiciona largura máxima para o MenuItem
+        maxWidth: '600px', // Define a largura máxima do menu
+        
+       }}
+      >
+      
+      <Badge badgeContent={'New'}
+       color="error"
+       sx={{ transform: 'scale(0.8)', pb: '5px'}}
+       >
+                <PlayCircleOutlineRoundedIcon   sx={{ transform: 'scale(1.8)' }} />
+              </Badge>
+       <Typography variant="inherit" noWrap sx={{ marginLeft: 1.5 }} > 
+       Como Instalar o Windows usando um cd de instalação e um pendrive
+        </Typography>
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
