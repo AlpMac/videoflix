@@ -18,7 +18,10 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Drawer from '@mui/material/Drawer';
 import MenuPrincipal from '../../componentes/MenuPrincipal/MenuPrincipal.jsx';
 import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
+import Popover from '@mui/material/Popover';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
+// Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -61,10 +64,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  // Estados para o WEB
+  const [anchorElNotificacao, setAnchorElNotificacao] = React.useState(null);
+  const [anchorElMensagem, setAnchorElMensagem] = React.useState(null);
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
-  const isMenuOpen = Boolean(anchorEl);
+  // Estados para o WEB
+  const isMenuOpenNotificacao = Boolean(anchorElNotificacao);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMenuOpeMensagem = Boolean(anchorElMensagem);
+
+  // Estados para o WEB - "MOBILE MENU"
+  const isMenuOpen = Boolean(anchorEl);
+
+  // Funções de abertura dos menus
+  const handleProfileMenuOpenNotificacao = (event) => {
+    setAnchorElNotificacao(event.currentTarget);
+  };
+
+  const handleProfileMenuOpenMensagem = (event) => {
+    setAnchorElMensagem(event.currentTarget);
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,6 +97,16 @@ export default function PrimarySearchAppBar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMenuCloseNotificacao = () => {
+    setAnchorElNotificacao(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMenuCloseMensagem = () => {
+    setAnchorElMensagem(null);
     handleMobileMenuClose();
   };
 
@@ -91,7 +122,8 @@ export default function PrimarySearchAppBar() {
     setOpenDrawer(false);
   };
 
-  const menuId = 'primary-search-account-menu';
+  // Menu de perfil para o WEB
+  const menuId = 'PerfilWEB';
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -113,7 +145,54 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  // Menu de notificação para o WEB
+  const menuIdNotificacao = 'Notificação';
+  const renderMenuNotificacao = (
+    <Menu
+      anchorEl={anchorElNotificacao}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpenNotificacao}
+      onClose={handleMenuCloseNotificacao}
+    >
+      <MenuItem onClick={handleMenuCloseNotificacao}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+    </Menu>
+  );
+
+  // Menu de mensagem para o WEB
+  const menuIdMensagem = 'Mensagem';
+  const renderMenuMensagem = (
+    <Menu
+      anchorEl={anchorElMensagem}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpeMensagem}
+      onClose={handleMenuCloseMensagem}
+    >
+      <MenuItem onClick={handleMenuCloseMensagem}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuCloseMensagem}>My account</MenuItem>
+    </Menu>
+  );
+
+  // Menu móvel
+  const mobileMenuId = 'PerfilMobile';
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -130,7 +209,7 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem onClick={handleProfileMenuOpenMensagem}>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
             <MailIcon />
@@ -138,12 +217,8 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         <p>Messages</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
+      <MenuItem onClick={handleProfileMenuOpenNotificacao}>
+        <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
           <Badge badgeContent={17} color="error">
             <NotificationsIcon />
           </Badge>
@@ -151,13 +226,7 @@ export default function PrimarySearchAppBar() {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
+        <IconButton size="large" aria-label="account of current user" aria-haspopup="true" color="inherit">
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
@@ -169,6 +238,7 @@ export default function PrimarySearchAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          {/* Ícone de menu para abrir o Drawer */}
           <IconButton
             size="large"
             edge="start"
@@ -179,6 +249,8 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
+
+          {/* Título do site */}
           <Typography
             variant="h6"
             noWrap
@@ -187,6 +259,8 @@ export default function PrimarySearchAppBar() {
           >
             MUI
           </Typography>
+
+          {/* Barra de pesquisa */}
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -195,12 +269,20 @@ export default function PrimarySearchAppBar() {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-            
           </Search>
+
+          {/* Elementos do WEB */}
           <Box sx={{ flexGrow: 1 }} />
-             <BannerMensagem />
+          <BannerMensagem />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <IconButton
+              size="large"
+              aria-label="4 novas Mensagem"
+              aria-controls={menuIdMensagem}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpenMensagem}
+              color="inherit"
+            >
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
@@ -208,6 +290,9 @@ export default function PrimarySearchAppBar() {
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
+              aria-controls={menuIdNotificacao}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpenNotificacao}
               color="inherit"
             >
               <Badge badgeContent={17} color="error">
@@ -226,6 +311,8 @@ export default function PrimarySearchAppBar() {
               <AccountCircle />
             </IconButton>
           </Box>
+
+          {/* Ícone de menu "Mais" para dispositivos móveis */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -240,19 +327,21 @@ export default function PrimarySearchAppBar() {
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Drawer para dispositivos móveis */}
       <Drawer
         anchor="left"
         open={openDrawer}
         onClose={handleDrawerClose}
       >
-       {/*CARREGAR OS MENUS AQUI*/}
-
-       <MenuPrincipal />     
-
-
+        <MenuPrincipal />
       </Drawer>
+
+      {/* Renderização dos menus */}
       {renderMobileMenu}
       {renderMenu}
+      {renderMenuNotificacao}
+      {renderMenuMensagem}
     </Box>
   );
 }
