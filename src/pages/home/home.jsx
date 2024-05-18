@@ -6,8 +6,8 @@ import BotoesDeNavegacao from '../../componentes/BannerMensagem/BotoesDeNavegaca
 function Home() {
   return (
     <Container sx={{ paddingTop: '40px' }}>
-
-      <CardPrincipal />
+      {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
+      <CardPrincipal canalId = {null} categoriaId ={null}/>
       {/* Outros componentes ou conteúdos aqui */}
     </Container>
   );

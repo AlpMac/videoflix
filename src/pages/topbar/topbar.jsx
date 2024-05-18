@@ -21,6 +21,8 @@ import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx'
 import Popover from '@mui/material/Popover';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineRounded';
+import { CardHeader } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -63,6 +65,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+
+  const arrayPerfil = {
+    idUsuario: 1,
+    nome: 'Marcus Vinicius Alpande de Castro',
+    fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
+    
+  };
+
+
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -123,7 +135,6 @@ export default function PrimarySearchAppBar() {
     setOpenDrawer(false);
   };
 
-  // Menu de perfil para o WEB
   const menuId = 'PerfilWEB';
   const renderMenu = (
     <Menu
@@ -141,8 +152,22 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem>
+        <img
+          src={arrayPerfil.fotoPerfil}
+          alt="Ícone do Canal"
+          style={{
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            marginRight: '10px',
+          }}
+        />
+        {arrayPerfil.nome}
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>Alterar foto</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Alterar senha</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Sair</MenuItem>
     </Menu>
   );
 
@@ -250,7 +275,14 @@ export default function PrimarySearchAppBar() {
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton size="large" aria-label="account of current user" aria-haspopup="true" color="inherit">
-          <AccountCircle />
+        <CardHeader
+        avatar={
+        <Avatar sx={{ bgcolor: '#f50057'
+        }} aria-label="recipe">
+                                    <img src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                                </Avatar>
+        }
+                                />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -331,7 +363,16 @@ export default function PrimarySearchAppBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <img
+              src={arrayPerfil.fotoPerfil}
+              alt="Ícone do Canal"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+              }}
+            />
+            {}
             </IconButton>
           </Box>
 
