@@ -65,11 +65,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-
+  // Dados do perfil 1 é administrador 0 normal 
   const arrayPerfil = {
     idUsuario: 1,
     nome: 'Marcus Vinicius Alpande de Castro',
     fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
+    perfil : '1',
     
   };
 

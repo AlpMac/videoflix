@@ -7,12 +7,14 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BallotRoundedIcon from '@mui/icons-material/BallotRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import ManRoundedIcon from '@mui/icons-material/ManRounded';
+import { useNavigate } from 'react-router-dom';
 
-export default function SimpleBottomNavigation() {
+export default function BotoesDeNavegacao() {
   const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();  // Certifique-se de que useNavigate está importado corretamente
 
   return (
-    <Box sx={{ width: 600 }}>
+    <Box sx={{ width: '100%' }}>
       <BottomNavigation
         showLabels
         value={value}
@@ -20,12 +22,11 @@ export default function SimpleBottomNavigation() {
           setValue(newValue);
         }}
       >
-        <BottomNavigationAction label="Principal" icon={<BallotRoundedIcon fontSize="large"  />} />
-        <BottomNavigationAction label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} /> 
-        <BottomNavigationAction label="Favoritos" icon={<FavoriteIcon fontSize="large"/>} />
-        <BottomNavigationAction label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
-        <BottomNavigationAction label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
-
+        <BottomNavigationAction onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={() => navigate("/meus-videos")} label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
+        <BottomNavigationAction label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={()=> navigate("/lista-de-canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
       </BottomNavigation>
     </Box>
   );

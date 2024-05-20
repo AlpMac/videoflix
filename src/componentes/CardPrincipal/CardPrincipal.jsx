@@ -15,6 +15,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 
 export default function CardPrincipal(props) {
@@ -79,6 +80,7 @@ export default function CardPrincipal(props) {
     console.log(videosFiltrados);
             
     return (
+        <Container>
         <Grid container spacing={3}>
             {videosFiltrados.map((video) => (
                 <Grid item xs={12} sm={6} md={4} key={video.id}>
@@ -129,5 +131,6 @@ export default function CardPrincipal(props) {
                 </Grid>
             ))}
         </Grid>
+    </Container>
     );
 }
