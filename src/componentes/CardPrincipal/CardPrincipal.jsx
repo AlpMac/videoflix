@@ -16,10 +16,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CardPrincipal(props) {
    
+
+    const navigate = useNavigate();
+    
+    const openVideo = (id) => {
+        navigate("/video/"+id);
+    }
+
     const DadosdoVideo = [
         {
             id: 1,
@@ -69,8 +77,7 @@ export default function CardPrincipal(props) {
     
     const idParaFiltrar = props.canalId; // Altere para null ou undefined para mostrar todos
     const idParaFiltrarCategoria = props.categoriaId; // Altere para null ou undefined para mostrar todos
-    console.log(idParaFiltrar);
-    console.log(idParaFiltrarCategoria);
+    
     
     const videosFiltrados = DadosdoVideo.filter(video => {
         return (idParaFiltrar === null || video.canalId === idParaFiltrar) &&
@@ -84,7 +91,8 @@ export default function CardPrincipal(props) {
         <Grid container spacing={3}>
             {videosFiltrados.map((video) => (
                 <Grid item xs={12} sm={6} md={4} key={video.id}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}>
+                      
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">

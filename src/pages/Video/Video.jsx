@@ -15,17 +15,30 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { CenterFocusStrong } from '@mui/icons-material';
 import ReactPlayer from 'react-player';
+import { useNavigate } from 'react-router-dom';
+import{ useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 
 export default function Video() {
 
+    //const navigate = useNavigate();
+    
+   // const openVideo = (id) => {
+    //    navigate("/video/"+{id});
+   // }
     const Item = styled(Grid)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
     }));
+  
 
+    const { id } = useParams();
+    const [video, setVideo] = useState(null);
+   
+    //esses dados viram do GET DO BANCO DE DADOS
     const DadosdoVideo = [
         {
             id: 1,
@@ -39,6 +52,17 @@ export default function Video() {
         },
     ];
 
+    useEffect(() => {
+        const videoEncontrado = DadosdoVideo.find((video) => video.id === parseInt(id));
+        if (videoEncontrado) {
+          setVideo(videoEncontrado);
+        }
+      }, []);
+    
+      if (!video) {
+        return <div>Error Tente novamente na tela principal.</div>;
+      }
+    //esses videos viram do GET TAMBEM DO BANCO DE DADOS
     const DadosdoVideoRecomendados = [
         {
             id_recomendado: 2,
@@ -75,18 +99,18 @@ export default function Video() {
             <Container maxWidth="xl">
                 <Grid container spacing={3} mt={2}>
                     <Grid item xs={12} md={8}>
-                        <Card>
+                        <Card id="video">
                             <CardHeader
                                 avatar={
                                     <Avatar
                                         aria-label="recipe"
-                                        src={DadosdoVideo[0].iconeCanal}
+                                        src={video.iconeCanal}
                                     />
                                 }
-                                title={DadosdoVideo[0].Canal}
+                                title={video.Canal}
                             />
                             <ReactPlayer
-                                url= {DadosdoVideo[0].url}
+                                url= {video.url}
                                 width='100%'
                                 height='400px'
                                 controls = {true}
@@ -101,10 +125,10 @@ export default function Video() {
                             /> */}
                             <CardContent>
                                 <Typography variant="h5" component="div">
-                                    {DadosdoVideo[0].titulo} 
+                                    {video.titulo} 
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary">
-                                    {DadosdoVideo[0].descricao}
+                                    {video.descricao}
                                 </Typography>
                             </CardContent>
                             <CardActions disableSpacing>
@@ -116,7 +140,7 @@ export default function Video() {
                                     
                                 </IconButton>
                                 <Typography>
-                                {DadosdoVideo[0].visualizacao + ' visualizações'}
+                                {video.visualizacao + ' visualizações'}
                                 </Typography>
                             </CardActions>
                         </Card>
