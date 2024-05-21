@@ -24,8 +24,8 @@ export default function BotoesDeNavegacao() {
       >
         <BottomNavigationAction onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
         <BottomNavigationAction onClick={() => navigate("/meus-videos")} label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={()=> navigate("/lista-de-canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={() => navigate("/meus-videos-favoritos")} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={() => navigate("/lista-de-canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
         <BottomNavigationAction onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
       </BottomNavigation>
     </Box>

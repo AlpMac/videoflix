@@ -7,7 +7,7 @@ function Home() {
   return (
     <Container >
       {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
-      <CardPrincipal canalId = {null} categoriaId ={null}/>
+      <CardPrincipal canalId = {null} categoriaId ={null} favorito={0} searchQuery={''}/>
       {/* Outros componentes ou conteúdos aqui */}
     </Container>
   );

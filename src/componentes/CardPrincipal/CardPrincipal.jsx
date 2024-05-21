@@ -20,8 +20,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function CardPrincipal(props) {
+    const [isFavorito, setIsFavorito] = React.useState(false);
    
-
+   
     const navigate = useNavigate();
     
     const openVideo = (id) => {
@@ -39,6 +40,20 @@ export default function CardPrincipal(props) {
             visualizacao: 1000,
             canalId: 1,
             categoriaId: 1,
+            favorito : 0,
+        },
+
+        {
+            id: 6,
+            titulo: 'Título do vídeo 6',
+            descricao: 'Descrição do vídeo 6',
+            imagem: 'https://source.unsplash.com/random/300x200',
+            iconeCanal : 'https://source.unsplash.com/random/300x203',
+            Canal : 'Canal 1',
+            visualizacao: 1000,
+            canalId: 1,
+            categoriaId: 1,
+            favorito : 1,
         },
         {
             id: 2,
@@ -50,6 +65,8 @@ export default function CardPrincipal(props) {
             visualizacao: 2000,
             canalId: 2,
             categoriaId: 1,
+            favorito : 1,
+
         },
         {
             id: 3,
@@ -61,6 +78,8 @@ export default function CardPrincipal(props) {
             visualizacao: 3000,
             canalId: 3,
             categoriaId: 3,
+            favorito : 1,
+
         },
         {
           id: 4,
@@ -68,30 +87,42 @@ export default function CardPrincipal(props) {
           descricao: 'Descrição do vídeo 4',
           imagem: 'https://source.unsplash.com/random/300x202',
           iconeCanal : 'https://source.unsplash.com/random/300x206',
-          Canal : 'Canal 4',
+          Canal : 'Canal 1',
           visualizacao: 4000,
           canalId: 1,
           categoriaId: 4,
+          favorito : 1,
+
       },
     ];
     
     const idParaFiltrar = props.canalId; // Altere para null ou undefined para mostrar todos
     const idParaFiltrarCategoria = props.categoriaId; // Altere para null ou undefined para mostrar todos
+    const favorito = props.favorito; // Altere para null ou undefined para mostrar todos
+    //const query = props.searchQuery;
     
+    const handleClickFavorito = (id) => {
+        setIsFavorito(DadosdoVideo.map(video => 
+            video.id === id ? { ...video, favorito: !video.favorito } : video
+        ));
+    };
     
     const videosFiltrados = DadosdoVideo.filter(video => {
+        
         return (idParaFiltrar === null || video.canalId === idParaFiltrar) &&
-               (idParaFiltrarCategoria === null || video.categoriaId === idParaFiltrarCategoria);
+               (idParaFiltrarCategoria === null || video.categoriaId === idParaFiltrarCategoria) &&
+               (favorito === 0 || video.favorito === favorito) //&&
+              // (video.titulo.toLowerCase().includes(query) || video.descricao.toLowerCase().includes(query))
+
     });
     
-    console.log(videosFiltrados);
             
     return (
         <Container>
         <Grid container spacing={3}>
             {videosFiltrados.map((video) => (
                 <Grid item xs={12} sm={6} md={4} key={video.id}>
-                    <Card sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}>
+                    <Card sx={{ maxWidth: 345}}>
                       
                         <CardHeader
                             avatar={
@@ -107,7 +138,7 @@ export default function CardPrincipal(props) {
                             title={video.titulo}
                             subheader={video.Canal}
                         />
-                        <CardMedia
+                        <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
                             component="img"
                             height="194"
                             image={video.imagem}
@@ -120,9 +151,9 @@ export default function CardPrincipal(props) {
                         </CardContent>
                         <CardActions disableSpacing sx={{ justifyContent: 'space-between' }}>
                             <div>
-                                <IconButton aria-label="Favorito">
-                                    <FavoriteIcon />
-                                </IconButton>
+                            <IconButton aria-label="Favorito" onClick={() => handleClickFavorito(video.id)}>
+                                        <FavoriteIcon style={{ color: video.favorito ? 'red' : 'inherit' }} />
+                                    </IconButton>
                                 <IconButton aria-label="Compartilhar">
                                     <ShareIcon />
                                 </IconButton>

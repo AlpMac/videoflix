@@ -23,6 +23,8 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineRounded';
 import { CardHeader } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
+import BotoesDeNavegacao from '../../componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -75,6 +77,7 @@ export default function PrimarySearchAppBar() {
   };
 
 
+ // const [searchQuery, setSearchQuery] = React.useState('');
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -324,7 +327,10 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+             // onChange={(e) => setSearchQuery(e.target.value)}
             />
+           
+
           </Search>
 
           {/* Elementos do WEB */}
@@ -407,6 +413,8 @@ export default function PrimarySearchAppBar() {
       {renderMenu}
       {renderMenuNotificacao}
       {renderMenuMensagem}
+  
+
     </Box>
   );
 }
