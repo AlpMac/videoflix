@@ -7,6 +7,10 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Link from '@mui/material/Link';
 import './MenuPrincipal.css'; // Importe o arquivo CSS aqui
 
+
+// ATENÇÃO - MENU DESABILITADO PARA NOVO MENU FIXO ACIMA DOS BOTÕES
+{/*Desabilitei o menu principal para criar o menu fixo acima dos botoes */} 
+
 export default function MenuPrincipal() {
   const Menus = [
     {
@@ -51,10 +55,18 @@ export default function MenuPrincipal() {
     <div className="menu-container">
       {Menus.map((menu, index) => (
         <Accordion key={menu.id} className="menu-item">
-          <AccordionSummary
+          <AccordionSummary 
             expandIcon={<ArrowDownwardIcon />}
             aria-controls={`panel${menu.id}-content`}
             id={`panel${menu.id}-header`}
+            sx={{ backgroundColor: '#f0f0f0',
+                   borderBottom: '1px solid #ccc',
+                   padding: '0 16px',
+                   '&.Mui-expanded': {
+                     backgroundColor: '#f0f0f0',
+                   }}
+    
+            }
           >
             <Typography className="menu-title">{menu.title}</Typography>
           </AccordionSummary>

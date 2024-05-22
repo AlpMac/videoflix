@@ -405,7 +405,8 @@ export default function PrimarySearchAppBar() {
         open={openDrawer}
         onClose={handleDrawerClose}
       >
-        <MenuPrincipal />
+       {/*Desabilitei o menu principal para criar o menu fixo acima dos botoes */} 
+       {{ /*<MenuPrincipal /> */}}
       </Drawer>
 
       {/* Renderização dos menus */}

@@ -12,7 +12,16 @@
     font-size: 12px;
     font-weight: bold;
     margin-right: 10px;
+    color: #004186;
    
+  }
+  .sumario {
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+    color: #004186;
+    padding-bottom: 0px;
+    
   }
   
   .submenu-list {
