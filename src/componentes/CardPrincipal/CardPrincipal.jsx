@@ -167,7 +167,7 @@ export default function CardPrincipal(props) {
                             style={{ 
                                 wordWrap: 'break-word',
                                 maxHeight: '300px',
-                                height: '80px',
+                                height: '70px',
                                 overflow: 'auto',
                               }}>
                                 {video.descricao_video}
