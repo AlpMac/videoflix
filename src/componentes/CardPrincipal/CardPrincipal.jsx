@@ -17,9 +17,27 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import api from '../../services/api.js'
+import { useState } from 'react';
 
 
 export default function CardPrincipal(props) {
+
+    const [listaVideos, setlistaVideos] = useState([]);
+
+    useEffect(() => {
+
+        api.get(`/`)
+                .then((response) => {
+                    setlistaVideos(response.data);
+                })
+                .catch((err) => {
+                    console.error("Erro ao buscar outros dados:", err);
+                });
+    }, []);
+    
+
     const [isFavorito, setIsFavorito] = React.useState(false);
    
    
@@ -29,7 +47,7 @@ export default function CardPrincipal(props) {
         navigate("/video/"+id);
     }
 
-    const DadosdoVideo = [
+   /* const DadosdoVideo = [
         {
             id: 1,
             titulo: 'Título do vídeo 1',
@@ -94,7 +112,7 @@ export default function CardPrincipal(props) {
           favorito : 1,
 
       },
-    ];
+    ]; */
     
     const idParaFiltrar = props.canalId; // Altere para null ou undefined para mostrar todos
     const idParaFiltrarCategoria = props.categoriaId; // Altere para null ou undefined para mostrar todos
@@ -102,12 +120,12 @@ export default function CardPrincipal(props) {
     //const query = props.searchQuery;
     
     const handleClickFavorito = (id) => {
-        setIsFavorito(DadosdoVideo.map(video => 
+        setIsFavorito(listaVideos.map(video => 
             video.id === id ? { ...video, favorito: !video.favorito } : video
         ));
     };
     
-    const videosFiltrados = DadosdoVideo.filter(video => {
+    const videosFiltrados = listaVideos.filter(video => {
         
         return (idParaFiltrar === null || video.canalId === idParaFiltrar) &&
                (idParaFiltrarCategoria === null || video.categoriaId === idParaFiltrarCategoria) &&
@@ -121,7 +139,7 @@ export default function CardPrincipal(props) {
         <Container>
         <Grid container spacing={3}>
             {videosFiltrados.map((video) => (
-                <Grid item xs={12} sm={6} md={4} key={video.id}>
+                <Grid item xs={12} sm={6} md={4} key={video.id_video}>
                     <Card sx={{ maxWidth: 345}}>
                       
                         <CardHeader
@@ -135,18 +153,18 @@ export default function CardPrincipal(props) {
                                   {/*  <MoreVertIcon / > */}
                                 </IconButton>
                             }
-                            title={video.titulo}
+                            title={video.titulo_video}
                             subheader={video.Canal}
                         />
                         <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
                             component="img"
                             height="194"
                             image={video.imagem}
-                            alt={video.titulo}
+                            alt={video.titulo_video}
                         />
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">
-                                {video.descricao}
+                                {video.descricao_video}
                             </Typography>
                         </CardContent>
                         <CardActions disableSpacing sx={{ justifyContent: 'space-between' }}>

@@ -8,7 +8,7 @@ import Link from '@mui/material/Link';
 import './MenuPrincipal.css'; // Importe o arquivo CSS aqui
 
 
-// ATENÇÃO - MENU DESABILITADO PARA NOVO MENU FIXO ACIMA DOS BOTÕES
+// ATENÇÃO - MENU DESABILITADO PARA NOVO MENU FIXO ACIMA DOS BOTÕES -> menuCategorias/menuCategoria.jsx
 {/*Desabilitei o menu principal para criar o menu fixo acima dos botoes */} 
 
 export default function MenuPrincipal() {
