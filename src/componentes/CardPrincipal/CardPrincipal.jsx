@@ -163,7 +163,13 @@ export default function CardPrincipal(props) {
                             alt={video.titulo_video}
                         />
                         <CardContent>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="text.secondary"
+                            style={{ 
+                                wordWrap: 'break-word',
+                                maxHeight: '300px',
+                                height: '80px',
+                                overflow: 'auto',
+                              }}>
                                 {video.descricao_video}
                             </Typography>
                         </CardContent>
