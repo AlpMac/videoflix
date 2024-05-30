@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import api from '../../services/api.js'
 import { useState } from 'react';
+import { servidorBackendEnviosThumbnail,servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
 
 
 export default function CardPrincipal(props) {
@@ -145,7 +146,7 @@ export default function CardPrincipal(props) {
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                    <img src={video.iconeCanal} alt="Ícone do Canal" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                                    <img src={`${servidorBackendEnviosImagemPerfil}${video.url_perfil}`} alt="Ícone do Canal" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
                                 </Avatar>
                             }
                             action={
@@ -154,13 +155,13 @@ export default function CardPrincipal(props) {
                                 </IconButton>
                             }
                             title={video.titulo_video}
-                            subheader={video.Canal}
+                            subheader={video.tratamento_formal+" "+video.nome_apelido}
                         />
                         <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
                             component="img"
                             height="194"
-                            image={video.imagem}
-                            alt={video.titulo_video}
+                            image={`${servidorBackendEnviosThumbnail}${video.thumbnail}`}
+                            alt={video.thumbnail}
                         />
                         <CardContent>
                             <Typography variant="body2" color="text.secondary"
