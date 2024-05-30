@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import Item from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
-import MenuCategoria from '../../menuCategorias/menuCategoria';
+import MenuCategoria from '../menuCategorias/menuCategoria.jsx';
 
 export default function BotoesDeNavegacao() {
   const [value, setValue] = React.useState(0);
@@ -51,7 +51,7 @@ export default function BotoesDeNavegacao() {
         <BottomNavigationAction onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
         <BottomNavigationAction onClick={() => navigate("/meus-videos")} label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
         <BottomNavigationAction onClick={() => navigate("/meus-videos-favoritos")} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={() => navigate("/lista-de-canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
+        <BottomNavigationAction onClick={() => navigate("/listar_canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
         <BottomNavigationAction onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
       </BottomNavigation>
     </Box>

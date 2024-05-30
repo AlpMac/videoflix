@@ -24,7 +24,7 @@ import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineR
 import { CardHeader } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
-import BotoesDeNavegacao from '../../componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
+import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({

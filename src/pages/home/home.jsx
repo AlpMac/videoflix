@@ -1,14 +1,10 @@
 import React from 'react';
 import { Container, CssBaseline } from '@mui/material';
 import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
-import BotoesDeNavegacao from '../../componentes/BannerMensagem/BotoesDeNavegacao/BotoesDeNavegacao';
+import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao';
 import PrimarySearchAppBar from '../topbar/topbar.jsx'
 
 function Home() {
-
-
-
-
   return (
     <>        
         <Container maxWidth='xl'>

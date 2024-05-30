@@ -200,7 +200,7 @@ export default function CardPrincipal(props) {
                             <div>
                                 <IconButton aria-label="Visualizações" disableRipple>
                                     <Typography variant="body2" color="text.secondary">
-                                        {video.visualizacao} Visualizações
+                                        {video.views} Visualizações
                                     </Typography>
                                 </IconButton>
                             </div>

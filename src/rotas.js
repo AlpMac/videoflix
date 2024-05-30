@@ -17,7 +17,7 @@ function Rotas(){
                 <Route path="/video/:id" element={<Video />} />
                 <Route path="/meus-videos" element={<CardPrincipal canalId={1} categoriaId={null} favorito={0} />} />
                 <Route path="/meus-videos-favoritos" element={<CardPrincipal canalId={null} categoriaId={null} favorito={1} />} />
-                <Route path="/lista-de-canais" element={<VerCanais />} />
+                <Route path="/listar_canais" element={<VerCanais />} />
                 </Routes>
 
             </BrowserRouter>
