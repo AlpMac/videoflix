@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import api from '../../services/api.js'
 import { useState } from 'react';
+import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail,servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
 
 
@@ -154,7 +155,18 @@ export default function CardPrincipal(props) {
                                   {/*  <MoreVertIcon / > */}
                                 </IconButton>
                             }
-                            title={video.titulo_video}
+
+                            title={
+                                    <Typography 
+                                    style={{ 
+                                       
+                                        maxHeight: '100px',
+                                        height: '50px'
+                                        
+                                      }}>
+                                    {video.titulo_video}
+                                    </Typography>
+                                  }
                             subheader={video.tratamento_formal+" "+video.nome_apelido}
                         />
                         <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
@@ -164,11 +176,11 @@ export default function CardPrincipal(props) {
                             alt={video.thumbnail}
                         />
                         <CardContent>
-                            <Typography variant="body2" color="text.secondary"
+                            <Typography variant="body1" color="text.secondary"
                             style={{ 
                                 wordWrap: 'break-word',
-                                maxHeight: '300px',
-                                height: '70px',
+                                maxHeight: '400px',
+                                height: '90px',
                                 overflow: 'auto',
                               }}>
                                 {video.descricao_video}
