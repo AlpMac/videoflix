@@ -157,16 +157,18 @@ export default function CardPrincipal(props) {
                             }
 
                             title={
-                                    <Typography 
-                                    style={{ 
-                                       
-                                        maxHeight: '100px',
-                                        height: '50px'
-                                        
-                                      }}>
-                                    {video.titulo_video}
-                                    </Typography>
-                                  }
+                                <Typography 
+                                  style={{ 
+                                    maxHeight: '100px',
+                                    height: '50px',
+                                    textAlign: 'left', // Adiciona alinhamento ao centro
+                                    display: 'flex', // Garante que o texto esteja centralizado verticalmente
+                                    alignItems: 'center', // Alinha o texto verticalmente ao centro
+                                  }}
+                                >
+                                  {video.titulo_video}
+                                </Typography>
+                              }
                             subheader={video.tratamento_formal+" "+video.nome_apelido}
                         />
                         <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
