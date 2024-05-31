@@ -18,6 +18,9 @@ import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import{ useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import api from '../../services/api.js';
+import { servidorBackendPlayVideo,servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
+
 
 
 export default function Video() {
@@ -39,7 +42,7 @@ export default function Video() {
     const [video, setVideo] = useState(null);
    
     //esses dados viram do GET DO BANCO DE DADOS
-    const DadosdoVideo = [
+   /* const DadosdoVideo = [
         {
             id: 1,
             titulo: 'Título do vídeo 1',
@@ -50,16 +53,31 @@ export default function Video() {
             visualizacao: 1000,
             url: 'https://youtu.be/wV1n1_E5AIQ',
         },
-    ];
+    ];*/
+  
+    const [listaVideo, setlistaVideo] = useState([]);
 
     useEffect(() => {
-        const videoEncontrado = DadosdoVideo.find((video) => video.id === parseInt(id));
+
+        api.get(`/video/${id}`)
+                .then((response) => {
+                    setlistaVideo(response.data);
+                })
+                .catch((err) => {
+                    console.error("Erro ao buscar outros dados:", err);
+                });
+    }, []);
+
+
+
+    useEffect(() => {
+        const videoEncontrado = listaVideo.find((video) => video.id === parseInt(id));
         if (videoEncontrado) {
           setVideo(videoEncontrado);
         }
       }, []);
     
-      if (!video) {
+      if (!listaVideo) {
         return <div>Error Tente novamente na tela principal.</div>;
       }
     //esses videos viram do GET TAMBEM DO BANCO DE DADOS
@@ -101,16 +119,15 @@ export default function Video() {
                     <Grid item xs={12} md={8}>
                         <Card id="video">
                             <CardHeader
-                                avatar={
-                                    <Avatar
-                                        aria-label="recipe"
-                                        src={video.iconeCanal}
-                                    />
-                                }
-                                title={video.Canal}
+                              avatar={
+                                <Avatar  aria-label="recipe">
+                                    <img src={`${servidorBackendEnviosImagemPerfil}${listaVideo.url_perfil}`} alt="Ícone do Canal" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                                </Avatar>
+                            }
+                                title={listaVideo.tratamento_formal+" "+listaVideo.nome_apelido}
                             />
                             <ReactPlayer
-                                url= {video.url}
+                                url= {`${servidorBackendPlayVideo}${listaVideo.url_video}`}
                                 width='100%'
                                 height='400px'
                                 controls = {true}
@@ -125,10 +142,10 @@ export default function Video() {
                             /> */}
                             <CardContent>
                                 <Typography variant="h5" component="div">
-                                    {video.titulo} 
+                                    {listaVideo.titulo_video} 
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary">
-                                    {video.descricao}
+                                    {listaVideo.descricao_video}
                                 </Typography>
                             </CardContent>
                             <CardActions disableSpacing>
@@ -139,9 +156,9 @@ export default function Video() {
                                     <ShareIcon />
                                     
                                 </IconButton>
-                                <Typography>
-                                {video.visualizacao + ' visualizações'}
-                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                        {listaVideo.views} Visualizações
+                                    </Typography>
                             </CardActions>
                         </Card>
                     </Grid>
