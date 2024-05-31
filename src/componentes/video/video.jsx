@@ -58,15 +58,19 @@ export default function Video() {
     const [listaVideo, setlistaVideo] = useState([]);
 
     useEffect(() => {
-
+        
         api.get(`/video/${id}`)
                 .then((response) => {
                     setlistaVideo(response.data);
+                   
                 })
                 .catch((err) => {
                     console.error("Erro ao buscar outros dados:", err);
                 });
     }, []);
+        //Pega os arquivos anexo do video
+    const arquivosArray = listaVideo.arquivos_complementares ? listaVideo.arquivos_complementares.split(', ') : [];
+
 
 
 
@@ -80,6 +84,8 @@ export default function Video() {
       if (!listaVideo) {
         return <div>Error Tente novamente na tela principal.</div>;
       }
+
+      
     //esses videos viram do GET TAMBEM DO BANCO DE DADOS
     const DadosdoVideoRecomendados = [
         {
@@ -110,6 +116,8 @@ export default function Video() {
             visualizacao_recomendado: 4000,
         },
     ];
+
+
 
     return (
         <React.Fragment>
@@ -166,11 +174,29 @@ export default function Video() {
 
                                         <Link to={`/canal/${listaVideo.id_usuario}`} style={{ marginRight: '8px' }}>{"#"+listaVideo.nome_submenu}</Link>
                                         {listaVideo.views} Visualizações
-                                    </Typography>
+                                </Typography>
                                     
 
                             </CardActions>
                         </Card>
+                        <Card id="Complemento">
+                          
+                        <CardContent>
+                                
+                                <Typography variant="body2" color="textSecondary">
+                                    Arquivos Complementares :  
+                                    {arquivosArray.map((arquivo, index) => (
+                                        <Link to={`/arquivos/${arquivo}`} key={index} style={{ marginRight: '8px', marginLeft:'3px' }}>
+                                            {arquivo}
+                                        </Link>
+                                    ))}
+                                </Typography>
+                            </CardContent>      
+
+                                   
+                        </Card>  
+                          
+                        
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Grid container spacing={2}>
@@ -221,6 +247,9 @@ export default function Video() {
                     </Grid>
                 </Grid>
             </Container>
+
+
+            
         </React.Fragment>
     );
 }
