@@ -171,7 +171,7 @@ export default function CardPrincipal(props) {
                               }
                             subheader={video.tratamento_formal+" "+video.nome_apelido}
                         />
-                        <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id)}
+                        <CardMedia sx={{ maxWidth: 345, cursor: 'pointer' }} onClick ={() => openVideo(video.id_video)}
                             component="img"
                             height="194"
                             image={`${servidorBackendEnviosThumbnail}${video.thumbnail}`}
