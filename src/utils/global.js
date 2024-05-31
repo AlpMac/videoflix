@@ -17,4 +17,5 @@ export const dateTimeFormat = "DD/MM/YYYY HH:mm";
 export const servidorBackendEnviosThumbnail = "http://localhost:3003/envios_thumbnail/";
 export const servidorBackendEnviosImagemPerfil = "http://localhost:3003/envios_imagemPerfil/";
 export const servidorBackendPlayVideo = "http://localhost:3003/play_video/";
+export const servidorBackendDownloadArquivos = "http://localhost:3003/download_arquivo/";
 

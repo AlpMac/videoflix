@@ -19,7 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import{ useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../services/api.js';
-import { servidorBackendPlayVideo,servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
+import { servidorBackendPlayVideo,servidorBackendEnviosImagemPerfil,servidorBackendDownloadArquivos } from '../../utils/global.js';
 
 
 
@@ -68,7 +68,7 @@ export default function Video() {
                     console.error("Erro ao buscar outros dados:", err);
                 });
     }, []);
-        //Pega os arquivos anexo do video
+        //Pega os arquivos anexo do video e divide 
     const arquivosArray = listaVideo.arquivos_complementares ? listaVideo.arquivos_complementares.split(', ') : [];
 
 
@@ -116,8 +116,19 @@ export default function Video() {
             visualizacao_recomendado: 4000,
         },
     ];
-
-
+    //função para baixar arquivos
+    const handleDownload = async (arquivo) => {
+        const response = await fetch(`${servidorBackendDownloadArquivos}${arquivo}`);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = arquivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    };
 
     return (
         <React.Fragment>
@@ -186,9 +197,14 @@ export default function Video() {
                                 <Typography variant="body2" color="textSecondary">
                                     Arquivos Complementares :  
                                     {arquivosArray.map((arquivo, index) => (
-                                        <Link to={`/arquivos/${arquivo}`} key={index} style={{ marginRight: '8px', marginLeft:'3px' }}>
+                                        //vamos criar um botão para baixar o arquivo
+                                        <button
+                                        key={index}
+                                        onClick={() => handleDownload(arquivo)}
+                                        style={{ marginRight: '8px', background: 'none', border: 'none', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                                        >
                                             {arquivo}
-                                        </Link>
+                                        </button>
                                     ))}
                                 </Typography>
                             </CardContent>      
