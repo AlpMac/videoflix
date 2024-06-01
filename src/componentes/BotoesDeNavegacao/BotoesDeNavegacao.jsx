@@ -13,10 +13,13 @@ import Item from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import MenuCategoria from '../menuCategorias/menuCategoria.jsx';
+import { usuarioLogado } from '../../utils/global.js';
 
 export default function BotoesDeNavegacao() {
   const [value, setValue] = React.useState(0);
   const navigate = useNavigate();  // Certifique-se de que useNavigate está importado corretamente
+
+
 
   return (
     <>
@@ -48,11 +51,11 @@ export default function BotoesDeNavegacao() {
           setValue(newValue);
         }}
       >
-        <BottomNavigationAction onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={() => navigate("/meus-videos")} label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={() => navigate("/meus-videos-favoritos")} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={() => navigate("/listar_canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
-        <BottomNavigationAction onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
+        <BottomNavigationAction id="principal"   onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
+        <BottomNavigationAction id="meus-videos" onClick={() => navigate(`/meus-videos/${usuarioLogado}`)}  label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
+        <BottomNavigationAction id="meus-videos-favoritos" onClick={() => navigate("/meus-videos-favoritos")} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
+        <BottomNavigationAction id="listar_canais" onClick={() => navigate("/listar_canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
+        <BottomNavigationAction id="cadastrar-video" onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
       </BottomNavigation>
     </Box>
 

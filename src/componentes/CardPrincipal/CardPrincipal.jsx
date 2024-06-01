@@ -12,8 +12,7 @@ import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
@@ -27,18 +26,29 @@ import { servidorBackendEnviosThumbnail,servidorBackendEnviosImagemPerfil } from
 export default function CardPrincipal(props) {
 
     const [listaVideos, setlistaVideos] = useState([]);
-
+    //se estiver usando o filtro MEU CANAL
+    
     useEffect(() => {
-
-        api.get(`/`)
+        if (props.canalId) {
+            api.get(`/meus-videos/${props.canalId}`)
+           
+                .then((response) => {
+                    console.log("DATA:", response.data);
+                    setlistaVideos(response.data);
+                })
+                .catch((err) => {
+                    console.error("Erro ao buscar outros dados:", err);
+                });
+        } else {
+            api.get(`/`)
                 .then((response) => {
                     setlistaVideos(response.data);
                 })
                 .catch((err) => {
                     console.error("Erro ao buscar outros dados:", err);
                 });
-    }, []);
-    
+        }
+    }, [props.canalId]); // Adicione `props.canalId` como dependência
 
     const [isFavorito, setIsFavorito] = React.useState(false);
    
@@ -127,20 +137,11 @@ export default function CardPrincipal(props) {
         ));
     };
     
-    const videosFiltrados = listaVideos.filter(video => {
-        
-        return (idParaFiltrar === null || video.canalId === idParaFiltrar) &&
-               (idParaFiltrarCategoria === null || video.categoriaId === idParaFiltrarCategoria) &&
-               (favorito === 0 || video.favorito === favorito) //&&
-              // (video.titulo.toLowerCase().includes(query) || video.descricao.toLowerCase().includes(query))
-
-    });
-    
-            
+           
     return (
         <Container>
         <Grid container spacing={3}>
-            {videosFiltrados.map((video) => (
+            {listaVideos.map((video) => (
                 <Grid item xs={12} sm={6} md={4} key={video.id_video}>
                     <Card sx={{ maxWidth: 345}}>
                       

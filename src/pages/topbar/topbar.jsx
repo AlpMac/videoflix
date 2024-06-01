@@ -263,7 +263,7 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem onClick={handleProfileMenuOpenMensagem}>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+          <Badge badgeContent={5} color="error">
             <MailIcon />
           </Badge>
         </IconButton>
@@ -345,7 +345,7 @@ export default function PrimarySearchAppBar() {
               onClick={handleProfileMenuOpenMensagem}
               color="inherit"
             >
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={5} color="error">
                 <MailIcon />
               </Badge>
             </IconButton>

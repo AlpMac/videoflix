@@ -10,7 +10,7 @@ function Home() {
         <Container maxWidth='xl'>
         <CssBaseline>
 
-        <PrimarySearchAppBar />
+        {/*<PrimarySearchAppBar />
         <div
           id="BotoesDeNavegacao"
           style={{
@@ -21,7 +21,7 @@ function Home() {
           }}
         >
           <BotoesDeNavegacao />
-        </div>
+        </div> */}
         <Container >    
           {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
           <Video />

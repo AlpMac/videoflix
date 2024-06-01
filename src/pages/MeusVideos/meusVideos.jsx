@@ -1,10 +1,14 @@
 import React from 'react';
 import { Container, CssBaseline } from '@mui/material';
-import ListarCanais from '../../componentes/listarCanais/listarCanais.jsx'; 
+import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao';
 import PrimarySearchAppBar from '../topbar/topbar.jsx'
+import { useParams } from 'react-router-dom';
 
-function listarCanais() {
+
+function MeusVideos() {
+    const { id_usuario } = useParams();
+
   return (
     <>        
         <Container maxWidth='xl'>
@@ -24,7 +28,7 @@ function listarCanais() {
         </div>*/}
         <Container >    
           {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
-         <ListarCanais />
+          <CardPrincipal canalId = {id_usuario} categoriaId ={null} favorito={0} searchQuery={''}/>
           {/* Outros componentes ou conteúdos aqui */}
         </Container>
         </CssBaseline>
@@ -35,4 +39,4 @@ function listarCanais() {
         );
 }
 
-export default listarCanais;
+export default MeusVideos;
