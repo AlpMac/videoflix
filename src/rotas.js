@@ -8,6 +8,7 @@ import MeusVideos from './pages/MeusVideos/meusVideos.jsx'
 import {usuarioLogado} from './utils/global.js';
 import BotoesDeNavegacao from './componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 import PrimarySearchAppBar from './pages/topbar/topbar.jsx';
+import MeusVideosFavoritos from './pages/meusVideosFavoritos/meusVideosFavoritos.jsx';
 
 function Rotas(){
 
@@ -29,7 +30,7 @@ function Rotas(){
                 <Route path="/cadastrar-video" element={<CadastrarVideo />} />
                 <Route path="/video/:id" element={<Video />} />
                 <Route path="/meus-videos/:id_usuario" element={<MeusVideos />} />
-                <Route path="/meus-videos-favoritos" element={<CardPrincipal canalId={null} categoriaId={null} favorito={1} />} />
+                <Route path="/meus-videos-favoritos/:id_usuario" element={<MeusVideosFavoritos  />} />
                 <Route path="/listar_canais" element={<VerCanais />} />
                 </Routes>
 

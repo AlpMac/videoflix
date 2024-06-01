@@ -53,7 +53,7 @@ export default function BotoesDeNavegacao() {
       >
         <BottomNavigationAction id="principal"   onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
         <BottomNavigationAction id="meus-videos" onClick={() => navigate(`/meus-videos/${usuarioLogado}`)}  label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction id="meus-videos-favoritos" onClick={() => navigate("/meus-videos-favoritos")} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
+        <BottomNavigationAction id="meus-videos-favoritos" onClick={() => navigate(`/meus-videos-favoritos/${usuarioLogado}`)} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
         <BottomNavigationAction id="listar_canais" onClick={() => navigate("/listar_canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
         <BottomNavigationAction id="cadastrar-video" onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
       </BottomNavigation>

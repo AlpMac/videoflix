@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
@@ -20,7 +21,7 @@ import { useEffect } from 'react';
 import api from '../../services/api.js'
 import { useState } from 'react';
 import './CardPrincipal.css';
-import { servidorBackendEnviosThumbnail,servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
+import { servidorBackendEnviosThumbnail,servidorBackendEnviosImagemPerfil,usuarioLogado } from '../../utils/global.js';
 
 
 export default function CardPrincipal(props) {
@@ -29,17 +30,26 @@ export default function CardPrincipal(props) {
     //se estiver usando o filtro MEU CANAL
     
     useEffect(() => {
-        if (props.canalId) {
-            api.get(`/meus-videos/${props.canalId}`)
-           
+        if (props.favorito) {
+            api.get(`/meus-videos-favoritos/${usuarioLogado}`)
                 .then((response) => {
-                    console.log("DATA:", response.data);
                     setlistaVideos(response.data);
                 })
                 .catch((err) => {
                     console.error("Erro ao buscar outros dados:", err);
                 });
-        } else {
+        } else if (props.canalId) {
+
+            //vamos prender com a variavel global que armazena o login para nao deixar o usuario ver os videos de outro usuario
+            api.get(`/meus-videos/${usuarioLogado}`)
+           
+                .then((response) => {
+                    setlistaVideos(response.data);
+                })
+                .catch((err) => {
+                    console.error("Erro ao buscar outros dados:", err);
+                });
+        } else  {
             api.get(`/`)
                 .then((response) => {
                     setlistaVideos(response.data);
@@ -47,7 +57,7 @@ export default function CardPrincipal(props) {
                 .catch((err) => {
                     console.error("Erro ao buscar outros dados:", err);
                 });
-        }
+        } 
     }, [props.canalId]); // Adicione `props.canalId` como dependência
 
     const [isFavorito, setIsFavorito] = React.useState(false);
@@ -59,77 +69,7 @@ export default function CardPrincipal(props) {
         navigate("/video/"+id);
     }
 
-   /* const DadosdoVideo = [
-        {
-            id: 1,
-            titulo: 'Título do vídeo 1',
-            descricao: 'Descrição do vídeo 1',
-            imagem: 'https://source.unsplash.com/random/300x200',
-            iconeCanal : 'https://source.unsplash.com/random/300x203',
-            Canal : 'Canal 1',
-            visualizacao: 1000,
-            canalId: 1,
-            categoriaId: 1,
-            favorito : 0,
-        },
 
-        {
-            id: 6,
-            titulo: 'Título do vídeo 6',
-            descricao: 'Descrição do vídeo 6',
-            imagem: 'https://source.unsplash.com/random/300x200',
-            iconeCanal : 'https://source.unsplash.com/random/300x203',
-            Canal : 'Canal 1',
-            visualizacao: 1000,
-            canalId: 1,
-            categoriaId: 1,
-            favorito : 1,
-        },
-        {
-            id: 2,
-            titulo: 'Título do vídeo 2',
-            descricao: 'Descrição do vídeo 2',
-            imagem: 'https://source.unsplash.com/random/300x201',
-            iconeCanal : 'https://source.unsplash.com/random/300x204',
-            Canal : 'Canal 2',
-            visualizacao: 2000,
-            canalId: 2,
-            categoriaId: 1,
-            favorito : 1,
-
-        },
-        {
-            id: 3,
-            titulo: 'Título do vídeo 3',
-            descricao: 'Descrição do vídeo 3',
-            imagem: 'https://source.unsplash.com/random/300x202',
-            iconeCanal : 'https://source.unsplash.com/random/300x205',
-            Canal : 'Canal 3',
-            visualizacao: 3000,
-            canalId: 3,
-            categoriaId: 3,
-            favorito : 1,
-
-        },
-        {
-          id: 4,
-          titulo: 'Título do vídeo 4',
-          descricao: 'Descrição do vídeo 4',
-          imagem: 'https://source.unsplash.com/random/300x202',
-          iconeCanal : 'https://source.unsplash.com/random/300x206',
-          Canal : 'Canal 1',
-          visualizacao: 4000,
-          canalId: 1,
-          categoriaId: 4,
-          favorito : 1,
-
-      },
-    ]; */
-    
-    const idParaFiltrar = props.canalId; // Altere para null ou undefined para mostrar todos
-    const idParaFiltrarCategoria = props.categoriaId; // Altere para null ou undefined para mostrar todos
-    const favorito = props.favorito; // Altere para null ou undefined para mostrar todos
-    //const query = props.searchQuery;
     
     const handleClickFavorito = (id) => {
         setIsFavorito(listaVideos.map(video => 
@@ -190,21 +130,30 @@ export default function CardPrincipal(props) {
                             </Typography>
                         </CardContent>
                         <CardActions disableSpacing sx={{ justifyContent: 'space-between' }}>
-                            <div>
+                        {/*
+                           <div>
                             <IconButton aria-label="Favorito" onClick={() => handleClickFavorito(video.id)}>
                                         <FavoriteIcon style={{ color: video.favorito ? 'red' : 'inherit' }} />
                                     </IconButton>
                                 <IconButton aria-label="Compartilhar">
                                     <ShareIcon />
                                 </IconButton>
-                            </div>
-                            <div>
+                            </div> */}
+                            <Container  sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'flex-end', // Alinha itens à direita
+                                    }}
+                                    >
                                 <IconButton aria-label="Visualizações" disableRipple>
+                                    <VisibilityRoundedIcon fontSize="small" sx={{ marginRight: 0.5 }} />
+
                                     <Typography variant="body2" color="text.secondary">
+
                                         {video.views} Visualizações
                                     </Typography>
                                 </IconButton>
-                            </div>
+                            </Container>
                         </CardActions>
                     </Card>
                 </Grid>

@@ -174,7 +174,11 @@ export default function Video() {
                             </CardContent>
                             <CardActions style={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton aria-label="add to favorites" align='left'>
-                                    <FavoriteIcon />
+                                    <FavoriteIcon
+                                    label="Favorito"
+                                    //fazer o favorito
+                                    style={{ color: listaVideo.favorito ? 'red' : 'inherit' }}
+                                    />
                                 </IconButton>
                                 <IconButton aria-label="share" align='left'>
                                     <ShareIcon />

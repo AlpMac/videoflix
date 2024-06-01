@@ -6,7 +6,7 @@ import PrimarySearchAppBar from '../topbar/topbar.jsx'
 import { useParams } from 'react-router-dom';
 
 
-function MeusVideos(props) {
+function MeusVideosFavoritos(props) {
     //const { id_usuario } = useParams();
     const id_usuario = props.id_usuario;
   return (
@@ -28,7 +28,7 @@ function MeusVideos(props) {
         </div>*/}
         <Container >    
           {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
-          <CardPrincipal canalId = {id_usuario} categoriaId ={null} favorito={0} searchQuery={''}/>
+          <CardPrincipal canalId = {id_usuario} categoriaId ={null} favorito={true} searchQuery={''}/>
           {/* Outros componentes ou conteúdos aqui */}
         </Container>
         </CssBaseline>
@@ -39,4 +39,4 @@ function MeusVideos(props) {
         );
 }
 
-export default MeusVideos;
+export default MeusVideosFavoritos;
