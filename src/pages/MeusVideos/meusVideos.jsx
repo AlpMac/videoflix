@@ -4,11 +4,14 @@ import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao';
 import PrimarySearchAppBar from '../topbar/topbar.jsx'
 import { useParams } from 'react-router-dom';
+import { usuarioLogado } from '../../utils/global.js';
 
 
 function MeusVideos(props) {
+     
     //const { id_usuario } = useParams();
-    const id_usuario = props.id_usuario;
+    //const id_usuario = props.id_usuario;
+    const id_usuario = usuarioLogado;
   return (
     <>        
         <Container maxWidth='xl'>

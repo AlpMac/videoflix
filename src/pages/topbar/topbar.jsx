@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,15 +16,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Drawer from '@mui/material/Drawer';
-import MenuPrincipal from '../../componentes/MenuPrincipal/MenuPrincipal.jsx';
 import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
-import Popover from '@mui/material/Popover';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineRounded';
-import { CardHeader } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
-import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -72,37 +65,18 @@ export default function PrimarySearchAppBar() {
     idUsuario: 1,
     nome: 'Marcus Vinicius Alpande de Castro',
     fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
-    perfil : '1',
-    
+    perfil: '1',
   };
 
-
- // const [searchQuery, setSearchQuery] = React.useState('');
-
+  
+  // Estados para os menus e drawer
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  // Estados para o WEB
-  const [anchorElNotificacao, setAnchorElNotificacao] = React.useState(null);
-  const [anchorElMensagem, setAnchorElMensagem] = React.useState(null);
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
-  // Estados para o WEB
-  const isMenuOpenNotificacao = Boolean(anchorElNotificacao);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const isMenuOpeMensagem = Boolean(anchorElMensagem);
-
-  // Estados para o WEB - "MOBILE MENU"
+  // Estados para o menu
   const isMenuOpen = Boolean(anchorEl);
-
-  // Funções de abertura dos menus
-  const handleProfileMenuOpenNotificacao = (event) => {
-    setAnchorElNotificacao(event.currentTarget);
-  };
-
-  const handleProfileMenuOpenMensagem = (event) => {
-    setAnchorElMensagem(event.currentTarget);
-  };
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -114,16 +88,6 @@ export default function PrimarySearchAppBar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMenuCloseNotificacao = () => {
-    setAnchorElNotificacao(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMenuCloseMensagem = () => {
-    setAnchorElMensagem(null);
     handleMobileMenuClose();
   };
 
@@ -143,16 +107,10 @@ export default function PrimarySearchAppBar() {
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={menuId}
       keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
@@ -175,118 +133,20 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
-  // Menu de notificação para o WEB
-  const menuIdNotificacao = 'Notificação';
-  const renderMenuNotificacao = (
-    <Menu
-      anchorEl={anchorElNotificacao}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpenNotificacao}
-      onClose={handleMenuCloseNotificacao}
-      display= 'flex'
-    >
-      <MenuItem onClick={handleMenuCloseNotificacao}
-       sx= {{
-        borderBottom: `1px solid`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%', // Adiciona largura máxima para o MenuItem
-        maxWidth: '600px', // Define a largura máxima do menu
-        
-       }}
-      >
-      
-      <Badge badgeContent={'New'}
-       color="error"
-       sx={{ transform: 'scale(0.8)', pb: '5px'}}
-       >
-                <PlayCircleOutlineRoundedIcon   sx={{ transform: 'scale(1.8)' }} />
-              </Badge>
-       <Typography variant="inherit" noWrap sx={{ marginLeft: 1.5 }} > 
-       Como Instalar o Windows usando um cd de instalação e um pendrive
-        </Typography>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  // Menu de mensagem para o WEB
-  const menuIdMensagem = 'Mensagem';
-  const renderMenuMensagem = (
-    <Menu
-      anchorEl={anchorElMensagem}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpeMensagem}
-      onClose={handleMenuCloseMensagem}
-    >
-      <MenuItem onClick={handleMenuCloseMensagem}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuCloseMensagem}>My account</MenuItem>
-    </Menu>
-  );
-
-  // Menu móvel
   const mobileMenuId = 'PerfilMobile';
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpenMensagem}>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={5} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpenNotificacao}>
-        <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton size="large" aria-label="account of current user" aria-haspopup="true" color="inherit">
-        <CardHeader
-        avatar={
-        <Avatar sx={{ bgcolor: '#f50057'
-        }} aria-label="recipe">
-                                    <img src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
-                                </Avatar>
-        }
-                                />
+          <Avatar src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -297,7 +157,6 @@ export default function PrimarySearchAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          {/* Ícone de menu para abrir o Drawer */}
           <IconButton
             size="large"
             edge="start"
@@ -308,8 +167,6 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-
-          {/* Título do site */}
           <Typography
             variant="h6"
             noWrap
@@ -318,31 +175,22 @@ export default function PrimarySearchAppBar() {
           >
             MUI
           </Typography>
-
-          {/* Barra de pesquisa */}
-          <Search>
+          {/*<Search> PESQUISA FOI PARA CARD PRINCIPAL
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-             // onChange={(e) => setSearchQuery(e.target.value)}
+              inputProps={{ 'aria-label': 'search', 'id': 'search-input' }}
+              inputRef={searchInputRef}
             />
-           
-
-          </Search>
-
-          {/* Elementos do WEB */}
+          </Search>*/}
           <Box sx={{ flexGrow: 1 }} />
           <BannerMensagem />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
-              aria-label="4 novas Mensagem"
-              aria-controls={menuIdMensagem}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpenMensagem}
+              aria-label="show 4 new mails"
               color="inherit"
             >
               <Badge badgeContent={5} color="error">
@@ -352,9 +200,6 @@ export default function PrimarySearchAppBar() {
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
-              aria-controls={menuIdNotificacao}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpenNotificacao}
               color="inherit"
             >
               <Badge badgeContent={17} color="error">
@@ -365,25 +210,13 @@ export default function PrimarySearchAppBar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <img
-              src={arrayPerfil.fotoPerfil}
-              alt="Ícone do Canal"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-              }}
-            />
-            {}
+              <Avatar src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" />
             </IconButton>
           </Box>
-
-          {/* Ícone de menu "Mais" para dispositivos móveis */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -398,24 +231,32 @@ export default function PrimarySearchAppBar() {
           </Box>
         </Toolbar>
       </AppBar>
-
-      {/* Drawer para dispositivos móveis */}
+      {renderMobileMenu}
+      {renderMenu}
       <Drawer
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="temporary"
         anchor="left"
         open={openDrawer}
         onClose={handleDrawerClose}
       >
-       {/*Desabilitei o menu principal para criar o menu fixo acima dos botoes */} 
-       {{ /*<MenuPrincipal /> */}}
+        <Box sx={{ overflow: 'auto' }}>
+          <img src={arrayPerfil.fotoPerfil} alt="Foto de Perfil" style={{ width: '100%', height: 'auto' }} />
+          <Typography variant="h6" noWrap>
+            {arrayPerfil.nome}
+          </Typography>
+          <MenuItem onClick={handleDrawerClose}>Home</MenuItem>
+          <MenuItem onClick={handleDrawerClose}>Contato</MenuItem>
+          <MenuItem onClick={handleDrawerClose}>Ajuda</MenuItem>
+        </Box>
       </Drawer>
-
-      {/* Renderização dos menus */}
-      {renderMobileMenu}
-      {renderMenu}
-      {renderMenuNotificacao}
-      {renderMenuMensagem}
-  
-
     </Box>
   );
 }
