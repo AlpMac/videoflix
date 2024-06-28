@@ -14,9 +14,10 @@ export const timezone = "America/Sao_Paulo";
 export const dateFormat = "DD/MM/YYYY";
 export const timeFormat = "HH:mm";
 export const dateTimeFormat = "DD/MM/YYYY HH:mm";
-export const servidorBackendEnviosThumbnail = "http://localhost:3003/envios_thumbnail/";
-export const servidorBackendEnviosImagemPerfil = "http://localhost:3003/envios_imagemPerfil/";
-export const servidorBackendPlayVideo = "http://localhost:3003/play_video/";
-export const servidorBackendDownloadArquivos = "http://localhost:3003/download_arquivo/";
+export const urlSistema = "http://localhost:3003/";
+export const servidorBackendEnviosThumbnail = urlSistema+"envios_thumbnail/";
+export const servidorBackendEnviosImagemPerfil = urlSistema+"envios_imagemPerfil/";
+export const servidorBackendPlayVideo = urlSistema+"play_video/";
+export const servidorBackendDownloadArquivos = urlSistema+"download_arquivo/";
 export const usuarioLogado = 1 ;
 

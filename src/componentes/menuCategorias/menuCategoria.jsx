@@ -1,55 +1,33 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
-import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const StyledMenu = styled((props) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  '& .MuiPaper-root': {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-    boxShadow:
-      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-    '& .MuiMenu-list': {
-      padding: '4px 0',
-    },
-    '& .MuiMenuItem-root': {
-      '& .MuiSvgIcon-root': {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
-      },
-      '&:active': {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          theme.palette.action.selectedOpacity,
-        ),
-      },
-    },
+const MenuButton = styled(Button)(({ theme }) => ({
+  width: '100%',
+  justifyContent: 'space-between',
+  //padding: theme.spacing(1.0),
+  backgroundColor: 'transparent',
+  color: theme.palette.text.primary,
+  border: `0px solid ${theme.palette.divider}`,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const SubmenuItem = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: theme.spacing(1),
+  cursor: 'pointer',
+  borderRadius: theme.shape.borderRadius,
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
   },
 }));
 
@@ -93,53 +71,39 @@ export default function MenuCategoria() {
     },
   ];
 
-  const [anchorEls, setAnchorEls] = React.useState({});
+  const [expandedMenus, setExpandedMenus] = React.useState({});
 
-  const handleClick = (event, id) => {
-    setAnchorEls((prev) => ({ ...prev, [id]: event.currentTarget }));
-  };
-
-  const handleClose = (id) => {
-    setAnchorEls((prev) => ({ ...prev, [id]: null }));
+  const handleClick = (id) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" >
-      <Box display="flex" gap={2} alignItems="center">
-        {Menus.map((menu) => (
-          <Box key={menu.id} display="flex" justifyContent="center">
-            <Button
-              id={`demo-customized-button-${menu.id}`}
-              aria-controls={anchorEls[menu.id] ? `demo-customized-menu-${menu.id}` : undefined}
-              aria-haspopup="true"
-              aria-expanded={anchorEls[menu.id] ? 'true' : undefined}
-              variant="contained"
-              disableElevation
-              onClick={(event) => handleClick(event, menu.id)}
-              endIcon={<KeyboardArrowDownIcon />}
-            >
+    <Box display="flex" flexDirection="column" alignItems="stretch" p={2}>
+      {Menus.map((menu) => (
+        <Box key={menu.id} mb={2}>
+          <MenuButton
+            onClick={() => handleClick(menu.id)}
+            endIcon={<KeyboardArrowDownIcon />}
+          >
+            <Typography variant="h8" noWrap>
               {menu.title}
-            </Button>
-            <StyledMenu
-              id={`demo-customized-menu-${menu.id}`}
-              MenuListProps={{
-                'aria-labelledby': `demo-customized-button-${menu.id}`,
-              }}
-              anchorEl={anchorEls[menu.id]}
-              open={Boolean(anchorEls[menu.id])}
-              onClose={() => handleClose(menu.id)}
-            >
+            </Typography>
+          </MenuButton>
+          {expandedMenus[menu.id] && (
+            <Box ml={2} mt={1}>
               {menu.submenu && menu.submenu.map((submenuItem) => (
-                <MenuItem key={submenuItem.id} onClick={() => handleClose(menu.id)} disableRipple>
-                  <Link href="#" underline="hover">
-                    {submenuItem.title}
-                  </Link>
-                </MenuItem>
+                <SubmenuItem key={submenuItem.id}>
+                  <Typography variant="body1">{submenuItem.title}</Typography>
+                  <ArrowRightIcon />
+                </SubmenuItem>
               ))}
-            </StyledMenu>
-          </Box>
-        ))}
-      </Box>
+            </Box>
+          )}
+        </Box>
+      ))}
     </Box>
   );
 }

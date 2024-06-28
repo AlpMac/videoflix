@@ -1,65 +1,51 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { Box, Container, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import BallotRoundedIcon from '@mui/icons-material/BallotRounded';
+import ManRoundedIcon from '@mui/icons-material/ManRounded';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BallotRoundedIcon from '@mui/icons-material/BallotRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import ManRoundedIcon from '@mui/icons-material/ManRounded';
-import { useNavigate } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
-import Item from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import MenuCategoria from '../menuCategorias/menuCategoria.jsx';
 import { usuarioLogado } from '../../utils/global.js';
+import CaminhoNavegacao from '../CaminhoNavegacao/CaminhoNavegacao.jsx';
 
 export default function BotoesDeNavegacao() {
-  const [value, setValue] = React.useState(0);
-  const navigate = useNavigate();  // Certifique-se de que useNavigate está importado corretamente
+  const navigate = useNavigate();
 
 
+  const menuItems = [
+    { id: 'principal', label: 'Principal', icon: <BallotRoundedIcon fontSize="medium" />, onClick: () => navigate("/") },
+    { id: 'meus-videos', label: 'Meus Videos', icon: <ManRoundedIcon fontSize="medium" />, onClick: () => navigate(`/meus-videos/${usuarioLogado}`) },
+    { id: 'meus-videos-favoritos', label: 'Favoritos', icon: <FavoriteIcon fontSize="medium" />, onClick: () => navigate(`/meus-videos-favoritos/${usuarioLogado}`) },
+    { id: 'listar_canais', label: 'Lista de canais', icon: <LocationOnIcon fontSize="medium" />, onClick: () => navigate("/listar_canais") },
+    { id: 'cadastrar-video', label: 'Enviar Vídeo', icon: <SendRoundedIcon fontSize="medium" />, onClick: () => navigate("/cadastrar-video") }
+  ];
 
   return (
-    <>
-
-    
     <Container>
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
-        <Paper
-          sx={{
-            padding: 2,
-            textAlign: 'center',
-            color: 'text.secondary',
-            elevation: 3,
-            alignItems: 'center',
-          }}
-        >
-          <MenuCategoria />
-        </Paper>
-      </Grid>
-    </Grid>
-    
-    
-    <Box sx={{ width: '100%' ,marginTop:'10px'}}>
-      <BottomNavigation
-        showLabels
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-      >
-        <BottomNavigationAction id="principal"   onClick={() => navigate("/")} label="Principal" icon={<BallotRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction id="meus-videos" onClick={() => navigate(`/meus-videos/${usuarioLogado}`)}  label="Meus Videos" icon={<ManRoundedIcon fontSize="large" />} />
-        <BottomNavigationAction id="meus-videos-favoritos" onClick={() => navigate(`/meus-videos-favoritos/${usuarioLogado}`)} label="Favoritos" icon={<FavoriteIcon fontSize="large" />} />
-        <BottomNavigationAction id="listar_canais" onClick={() => navigate("/listar_canais")} label="Lista de canais" icon={<LocationOnIcon fontSize="large" />} />
-        <BottomNavigationAction id="cadastrar-video" onClick={()=> navigate("/cadastrar-video")} label="Enviar Vídeo" icon={<SendRoundedIcon fontSize="large" />} />
-      </BottomNavigation>
-    </Box>
-
+      <Box sx={{ width: '100%', marginTop: '10px' }}>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              key={item.id}
+              component="button"
+              onClick={item.onClick}
+              sx={{
+                textAlign: 'left',
+                fontSize: '1rem', // Tamanho da fonte ajustado
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: '40px' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.label} sx={{ fontSize: '0.875rem' }} /> {/* Tamanho da fonte do texto */}
+            </ListItem>
+          ))}
+        </List>
+      </Box>
     </Container>
-    </>
   );
 }

@@ -3,6 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
@@ -18,6 +19,8 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Drawer from '@mui/material/Drawer';
 import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
 import Avatar from '@mui/material/Avatar';
+import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
+import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -63,12 +66,12 @@ export default function PrimarySearchAppBar() {
   // Dados do perfil 1 é administrador 0 normal 
   const arrayPerfil = {
     idUsuario: 1,
-    nome: 'Marcus Vinicius Alpande de Castro',
+    //pegaremos do locate o nome 
+    nome: '3º-PD-Alpande',
     fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
     perfil: '1',
   };
 
-  
   // Estados para os menus e drawer
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -117,7 +120,7 @@ export default function PrimarySearchAppBar() {
       <MenuItem>
         <img
           src={arrayPerfil.fotoPerfil}
-          alt="Ícone do Canal"
+          alt="Perfil"
           style={{
             width: '50px',
             height: '50px',
@@ -155,7 +158,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             size="large"
@@ -175,16 +178,6 @@ export default function PrimarySearchAppBar() {
           >
             MUI
           </Typography>
-          {/*<Search> PESQUISA FOI PARA CARD PRINCIPAL
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search', 'id': 'search-input' }}
-              inputRef={searchInputRef}
-            />
-          </Search>*/}
           <Box sx={{ flexGrow: 1 }} />
           <BannerMensagem />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -240,6 +233,7 @@ export default function PrimarySearchAppBar() {
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
+            marginTop: '64px', // altura da AppBar
           },
         }}
         variant="temporary"
@@ -248,15 +242,27 @@ export default function PrimarySearchAppBar() {
         onClose={handleDrawerClose}
       >
         <Box sx={{ overflow: 'auto' }}>
-          <img src={arrayPerfil.fotoPerfil} alt="Foto de Perfil" style={{ width: '100%', height: 'auto' }} />
-          <Typography variant="h6" noWrap>
-            {arrayPerfil.nome}
+          <Typography variant="h6" noWrap sx={{ padding: '15px' }}>
+          
           </Typography>
-          <MenuItem onClick={handleDrawerClose}>Home</MenuItem>
-          <MenuItem onClick={handleDrawerClose}>Contato</MenuItem>
-          <MenuItem onClick={handleDrawerClose}>Ajuda</MenuItem>
+          <Divider textAlign="left">Categorias</Divider>
+          <MenuItem>
+            <MenuCategoria />
+          </MenuItem>
+          <Divider />
+          <MenuItem>
+            Você 
+          </MenuItem>
+          <MenuItem>
+            <BotoesDeNavegacao />
+          </MenuItem>
+
+
         </Box>
       </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '10px' }}>
+       
+      </Box>
     </Box>
   );
 }

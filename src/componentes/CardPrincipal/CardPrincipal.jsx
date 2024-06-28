@@ -17,8 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api.js';
 import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usuarioLogado } from '../../utils/global.js';
+import { Box } from '@mui/material';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+import CaminhoNavegacao from '../CaminhoNavegacao/CaminhoNavegacao.jsx';
 
 export default function CardPrincipal(props) {
+
   const [listaVideos, setListaVideos] = useState([]);
   const [pesquisa, setPesquisa] = useState('');
 
@@ -59,10 +64,15 @@ export default function CardPrincipal(props) {
     video.titulo_video.toLowerCase().includes(pesquisa.toLowerCase())
   );
 
+ 
   return (
     <Container>
+    {/*  <Box>
+      <CaminhoNavegacao link1={props.link1} link2={props.link2}/>
+      </Box> FAREI DEPOIS UM CARD INFINITO COM OS MENUS IGUAL YOUTUBE*/}
+     
       <TextField
-        label="Pesquisar vídeos"
+        label={`Pesquisar ${props.caminho}`} 
         variant="outlined"
         fullWidth
         margin="normal"
