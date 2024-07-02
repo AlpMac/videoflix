@@ -21,6 +21,9 @@ import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx'
 import Avatar from '@mui/material/Avatar';
 import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
+import { nomeSistema } from '../../utils/global.js';
+import logo from '../../assets/img/logo.png';
+
 
 // Estilos para os componentes
 const Search = styled('div')(({ theme }) => ({
@@ -170,13 +173,15 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
+          <img src={logo} alt="Logo" 
+          style={{ height: '40px', marginRight: '10px' }} /> {/* Adicione a imagem aqui */}
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+           {nomeSistema}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <BannerMensagem />
@@ -242,23 +247,17 @@ export default function PrimarySearchAppBar() {
         onClose={handleDrawerClose}
       >
         <Box sx={{ overflow: 'auto' }}>
-          <Typography variant="h6" noWrap sx={{ padding: '15px' }}>
+          <Typography variant="h6" noWrap sx={{ padding: '10px' }}>
           
           </Typography>
           <Divider textAlign="left">Categorias</Divider>
           <MenuItem>
             <MenuCategoria />
           </MenuItem>
-          <Divider />
-          <MenuItem>
-            Você 
-          </MenuItem>
-          <MenuItem>
-            <BotoesDeNavegacao />
-          </MenuItem>
-
-
-        </Box>
+          <Divider textAlign="left">Você</Divider>
+          
+            <BotoesDeNavegacao onClose={handleDrawerClose} />
+          </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '10px' }}>
        

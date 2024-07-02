@@ -7,11 +7,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { usuarioLogado } from '../../utils/global.js';
-import CaminhoNavegacao from '../CaminhoNavegacao/CaminhoNavegacao.jsx';
 
-export default function BotoesDeNavegacao() {
+export default function BotoesDeNavegacao({ onClose }) {
   const navigate = useNavigate();
-
 
   const menuItems = [
     { id: 'principal', label: 'Principal', icon: <BallotRoundedIcon fontSize="medium" />, onClick: () => navigate("/") },
@@ -21,27 +19,38 @@ export default function BotoesDeNavegacao() {
     { id: 'cadastrar-video', label: 'Enviar Vídeo', icon: <SendRoundedIcon fontSize="medium" />, onClick: () => navigate("/cadastrar-video") }
   ];
 
+  const handleItemClick = (onClick) => {
+    onClick();
+    if (onClose) onClose();
+  };
+
   return (
     <Container>
-      <Box sx={{ width: '100%', marginTop: '10px' }}>
-        <List>
+      <Box sx={{ width: '100%' }}>
+        <List 
+          sx={{ width: '100%', bgcolor: 'white' }}
+          component="nav"
+        >
           {menuItems.map((item) => (
             <ListItem
               key={item.id}
               component="button"
-              onClick={item.onClick}
+              onClick={() => handleItemClick(item.onClick)}
               sx={{
                 textAlign: 'left',
-                fontSize: '1rem', // Tamanho da fonte ajustado
+                fontSize: '6px', // Tamanho da fonte ajustado
+                backgroundColor: 'transparent', // Remove o fundo cinza
+                border: 'none', // Remove a borda
                 '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)', // Cor de fundo ao passar o mouse
                 },
+                cursor: 'pointer', // Adiciona cursor de ponteiro ao passar o mouse
               }}
             >
               <ListItemIcon sx={{ minWidth: '40px' }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.label} sx={{ fontSize: '0.875rem' }} /> {/* Tamanho da fonte do texto */}
+              <ListItemText variant="body2" primary={item.label}  /> {/* Tamanho da fonte do texto */}
             </ListItem>
           ))}
         </List>

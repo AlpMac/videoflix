@@ -88,7 +88,7 @@ export default function MenuCategoria() {
             onClick={() => handleClick(menu.id)}
             endIcon={<KeyboardArrowDownIcon />}
           >
-            <Typography variant="h8" noWrap>
+            <Typography variant="body2" noWrap>
               {menu.title}
             </Typography>
           </MenuButton>

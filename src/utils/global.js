@@ -2,7 +2,7 @@
 import favicon from "../assets/img/favicon.ico";
 import logo from "../assets/img/logo.png";
 
-export const nomeSistema = "Video Flix";
+export const nomeSistema = "CLTIFLIX";
 export const versao = "1.0";
 export const ano = 2024;
 export const autor = "Marcus Vinicius Alpande de Castro";
