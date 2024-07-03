@@ -1,69 +1,23 @@
-import React, { useEffect, useRef } from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import Drawer from '@mui/material/Drawer';
 import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
 import Avatar from '@mui/material/Avatar';
 import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
-import { nomeSistema } from '../../utils/global.js';
-import logo from '../../assets/img/logo.png';
+import Logotipo from '../../componentes/logotipo/logotipo.jsx';
 
-
-// Estilos para os componentes
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: '30%',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
 
 export default function PrimarySearchAppBar() {
   // Dados do perfil 1 é administrador 0 normal 
@@ -77,30 +31,21 @@ export default function PrimarySearchAppBar() {
 
   // Estados para os menus e drawer
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
   // Estados para o menu
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+//  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+ 
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
   };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
+ 
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
   };
@@ -110,6 +55,7 @@ export default function PrimarySearchAppBar() {
   };
 
   const menuId = 'PerfilWEB';
+  //MENU PERFIL
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -139,27 +85,7 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
-  const mobileMenuId = 'PerfilMobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton size="large" aria-label="account of current user" aria-haspopup="true" color="inherit">
-          <Avatar src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
-
-  return (
+   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar>
@@ -173,18 +99,12 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <img src={logo} alt="Logo" 
-          style={{ height: '40px', marginRight: '10px' }} /> {/* Adicione a imagem aqui */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-           {nomeSistema}
-          </Typography>
+         
+         <Logotipo />
+         
           <Box sx={{ flexGrow: 1 }} />
           <BannerMensagem />
+          
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -215,50 +135,40 @@ export default function PrimarySearchAppBar() {
               <Avatar src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
       {renderMenu}
       <Drawer
-        sx={{
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
           width: 240,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
-            marginTop: '64px', // altura da AppBar
-          },
-        }}
-        variant="temporary"
-        anchor="left"
-        open={openDrawer}
-        onClose={handleDrawerClose}
-      >
-        <Box sx={{ overflow: 'auto' }}>
-          <Typography variant="h6" noWrap sx={{ padding: '10px' }}>
-          
-          </Typography>
-          <Divider textAlign="left">Categorias</Divider>
-          <MenuItem>
-            <MenuCategoria />
-          </MenuItem>
-          <Divider textAlign="left">Você</Divider>
-          
-            <BotoesDeNavegacao onClose={handleDrawerClose} />
-          </Box>
-      </Drawer>
+          boxSizing: 'border-box',
+          marginTop: '64px', // altura da AppBar
+          height: 'calc(100% - 64px)', // ajuste para altura total menos a AppBar
+          display: 'flex', // Usar flexbox para o layout
+          flexDirection: 'column', // Dispor os itens em coluna
+        },
+      }}
+      variant="temporary"
+      anchor="left"
+      open={openDrawer}
+      onClose={handleDrawerClose}
+    >
+      <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <Typography variant="h6" sx={{ padding: '10px' }}>
+        </Typography>
+
+        <Divider textAlign="left">Categorias</Divider>
+
+        <MenuCategoria />
+
+        <Divider textAlign="left">Você</Divider>
+
+        <BotoesDeNavegacao onClose={handleDrawerClose} />
+      </Box>
+    </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '10px' }}>
        
       </Box>

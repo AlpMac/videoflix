@@ -83,12 +83,12 @@ export default function MenuCategoria() {
   return (
     <Box display="flex" flexDirection="column" alignItems="stretch" p={2}>
       {Menus.map((menu) => (
-        <Box key={menu.id} mb={2}>
+        <Box key={menu.id} mb={1}>
           <MenuButton
             onClick={() => handleClick(menu.id)}
             endIcon={<KeyboardArrowDownIcon />}
           >
-            <Typography variant="body2" noWrap>
+            <Typography variant="body2" >
               {menu.title}
             </Typography>
           </MenuButton>

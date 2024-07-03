@@ -25,7 +25,7 @@ export default function BotoesDeNavegacao({ onClose }) {
   };
 
   return (
-    <Container>
+    <Container >
       <Box sx={{ width: '100%' }}>
         <List 
           sx={{ width: '100%', bgcolor: 'white' }}
@@ -38,6 +38,7 @@ export default function BotoesDeNavegacao({ onClose }) {
               onClick={() => handleItemClick(item.onClick)}
               sx={{
                 textAlign: 'left',
+                paddingTop :'2px',
                 fontSize: '6px', // Tamanho da fonte ajustado
                 backgroundColor: 'transparent', // Remove o fundo cinza
                 border: 'none', // Remove a borda
