@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useNavigate } from 'react-router-dom';
+
 
 const MenuButton = styled(Button)(({ theme }) => ({
   width: '100%',
@@ -32,6 +34,8 @@ const SubmenuItem = styled(Box)(({ theme }) => ({
 }));
 
 export default function MenuCategoria() {
+  const navigate = useNavigate();
+
   const Menus = [
     {
       id: 1,
@@ -80,6 +84,10 @@ export default function MenuCategoria() {
     }));
   };
 
+  const handleCategoriaClick =(id,title) => {
+   navigate(`/categoria/${id}`)
+  }
+
   return (
     <Box display="flex" flexDirection="column" alignItems="stretch" p={2}>
       {Menus.map((menu) => (
@@ -95,7 +103,9 @@ export default function MenuCategoria() {
           {expandedMenus[menu.id] && (
             <Box ml={2} mt={1}>
               {menu.submenu && menu.submenu.map((submenuItem) => (
-                <SubmenuItem key={submenuItem.id}>
+                <SubmenuItem key={submenuItem.id}
+                 onClick={() => handleCategoriaClick(submenuItem.id,submenuItem.title)}
+                >
                   <Typography variant="body1">{submenuItem.title}</Typography>
                   <ArrowRightIcon />
                 </SubmenuItem>

@@ -35,20 +35,25 @@ export default function CardPrincipal(props) {
           response = await api.get(`/meus-videos-favoritos/${usuarioLogado}`);
         } else if (props.canalId) {
           response = await api.get(`/meus-videos/${usuarioLogado}`);
-        } else if (!props.favorito || !props.canalId){
+        } else if (props.categoriaId) {
+          
+          response = await api.get(`/categoria/${props.categoriaId}`);
+        } 
+        
+          else if (!props.favorito || !props.canalId || !props.categoriaId){
           response = await api.get(`/`);
         }
         //console.log("favorito" + props.favorito);
         //console.log("canalID" + props.canaId);
         
-
+        console.log("entrou no if "+response.data);
         setListaVideos(response.data);
       } catch (err) {
         console.error("Erro ao buscar dados:", err);
       }
     };
     fetchData();
-  }, [props.canalId, props.favorito]);
+  }, [props.canalId, props.favorito, props.categoria]);
 
   const navigate = useNavigate();
 

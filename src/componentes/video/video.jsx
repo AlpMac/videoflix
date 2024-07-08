@@ -137,7 +137,8 @@ export default function Video() {
                 <Grid container spacing={3} mt={2}>
                     
                     <Grid item xs={12} md={8}>
-                        <Card id="video">
+                        <Card id="video"
+                        >
                             <CardHeader
                               avatar={
                                 <Avatar  aria-label="recipe">
@@ -173,6 +174,7 @@ export default function Video() {
                                     {listaVideo.descricao_video}
                                 </Typography>
                             </CardContent>
+
                             <CardActions style={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton aria-label="add to favorites" align='left'>
                                     <FavoriteIcon
@@ -190,12 +192,15 @@ export default function Video() {
 
                                         <Link to={`/canal/${listaVideo.id_usuario}`} style={{ marginRight: '8px' }}>{"#"+listaVideo.nome_submenu}</Link>
                                         {listaVideo.views} Visualizações
-                                </Typography>
-                                    
+                               </Typography>
+                              
 
                             </CardActions>
                         </Card>
-                        <Card id="Complemento">
+
+                        <Card id="Complemento"
+                        
+                        >
                           
                         <CardContent>
                                 

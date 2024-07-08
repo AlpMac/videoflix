@@ -10,7 +10,7 @@ import CaminhoNavegacao from './componentes/CaminhoNavegacao/CaminhoNavegacao.js
 import PrimarySearchAppBar from './pages/topbar/topbar.jsx';
 import MeusVideosFavoritos from './pages/meusVideosFavoritos/meusVideosFavoritos.jsx';
 
-function Rotas(){
+function Rotas(props){
 
     return (
             <BrowserRouter>
@@ -27,6 +27,8 @@ function Rotas(){
                 <BotoesDeNavegacao /></div>*/}
                 <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/categoria/:id" element={<Home />} />
+                
                 <Route path="/cadastrar-video" element={<CadastrarVideo />} />
                 <Route path="/video/:id" element={<Video />} />          {/*link1="Seus Videos" link2=' ' usaremos depois para barra infinita*/ }  
                 <Route path="/meus-videos/:id_usuario" element={<MeusVideos />  } />

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Container, CssBaseline } from '@mui/material';
 import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
+import { useParams } from 'react-router-dom';
 
 
-function Home() {
+function Home(props) {
+  const { id } = useParams();
+  console.log("teste"+id);
   return (
     <>        
         <Container maxWidth='xl'>
@@ -24,7 +27,7 @@ function Home() {
         <Container >    
           {/* Passe canalId = {1} para mostrar apenas o video do canal 1 */}
           <CardPrincipal canalId = {null}
-                         categoriaId ={null}
+                         categoriaId ={id}
                          favorito={0}
                          searchQuery={''}
                          caminho="em todos os vídeos"
