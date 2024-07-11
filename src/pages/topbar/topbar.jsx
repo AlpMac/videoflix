@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,35 +17,45 @@ import Avatar from '@mui/material/Avatar';
 import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 import Logotipo from '../../componentes/logotipo/logotipo.jsx';
-
+import NotificationPopup from '../../componentes/notificacaPopUp/notificacaoPopUp.jsx'; // Verifique se o caminho do componente está correto
+import Popover from '@mui/material/Popover'; // Importe o Popover do Material-UI
+import api from '../../services/api.js'; // Importe a instância do Axios ou fetch
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import { Button } from '@mui/material';
 
 export default function PrimarySearchAppBar() {
-  // Dados do perfil 1 é administrador 0 normal 
   const arrayPerfil = {
     idUsuario: 1,
-    //pegaremos do locate o nome 
     nome: '3º-PD-Alpande',
     fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
     perfil: '1',
   };
 
-  // Estados para os menus e drawer
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null);
+  const [listaNotificacao, setListaNotificacao] = useState([]); // Corrigido para setListaNotificacao
 
-  // Estados para o menu
-  const isMenuOpen = Boolean(anchorEl);
-//  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  useEffect(() => {
+    // Exemplo de uso do useEffect para buscar notificações
+    // Supondo que 'api' seja a instância correta do Axios ou fetch
+    api.get(`/notificacao`)
+      .then((response) => {
+        setListaNotificacao(response.data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar notificações:", err);
+      });
+  }, []); // Array vazio indica que useEffect será executado apenas uma vez, após a montagem
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
- 
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
- 
+
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
   };
@@ -54,8 +64,16 @@ export default function PrimarySearchAppBar() {
     setOpenDrawer(false);
   };
 
+  const handleNotificationsClick = (event) => {
+    setNotificationsAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationsClose = () => {
+    setNotificationsAnchorEl(null);
+  };
+
   const menuId = 'PerfilWEB';
-  //MENU PERFIL
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -63,7 +81,7 @@ export default function PrimarySearchAppBar() {
       id={menuId}
       keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
+      open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
       <MenuItem>
@@ -85,7 +103,7 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
-   return (
+  return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar>
@@ -99,12 +117,9 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-         
-         <Logotipo />
-         
+          <Logotipo />
           <Box sx={{ flexGrow: 1 }} />
           <BannerMensagem />
-          
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -119,8 +134,9 @@ export default function PrimarySearchAppBar() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={handleNotificationsClick}
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={listaNotificacao.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -138,39 +154,76 @@ export default function PrimarySearchAppBar() {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      <Popover
+        open={Boolean(notificationsAnchorEl)}
+        anchorEl={notificationsAnchorEl}
+        onClose={handleNotificationsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+
+      <Box sx={{ p: 2 }}>
+        
+            {listaNotificacao.map((notification, id) => (
+              <> <Divider orientation="horizontal"  />
+               <Box key={id} sx={{ display: 'flex', alignItems: 'center', mb:2 ,mt:2 }}>
+                <Avatar src={arrayPerfil.fotoPerfil} sx={{ mr: 2 }}></Avatar> {/* Ícone da esquerda, você pode substituir pela imagem que quiser */}
+                <Box>
+                  <Typography>{notification.notificacao}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Enviado por: TESTE
+                  </Typography>
+                  <Typography variant="body1" color="textTerciario">
+                  <Button variant="contained" size="small" endIcon={<AnnouncementIcon />}>
+                      Ler 
+                    </Button>
+                  </Typography>
+                 
+                </Box>
+               
+              
+              </Box></>
+            ))}
+       </Box>
+      
+      
+      </Popover>
       <Drawer
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        sx={{
           width: 240,
-          boxSizing: 'border-box',
-          marginTop: '64px', // altura da AppBar
-          height: 'calc(100% - 64px)', // ajuste para altura total menos a AppBar
-          display: 'flex', // Usar flexbox para o layout
-          flexDirection: 'column', // Dispor os itens em coluna
-        },
-      }}
-      variant="temporary"
-      anchor="left"
-      open={openDrawer}
-      onClose={handleDrawerClose}
-    >
-      <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-        <Typography variant="h6" sx={{ padding: '10px' }}>
-        </Typography>
-
-        <Divider textAlign="left">Categorias</Divider>
-
-        <MenuCategoria />
-
-        <Divider textAlign="left">Você</Divider>
-
-        <BotoesDeNavegacao onClose={handleDrawerClose} />
-      </Box>
-    </Drawer>
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+            marginTop: '64px',
+            height: 'calc(100% - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+          },
+        }}
+        variant="temporary"
+        anchor="left"
+        open={openDrawer}
+        onClose={handleDrawerClose}
+      >
+        <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+          <Typography variant="h6" sx={{ padding: '10px' }}>
+            {/* Conteúdo do cabeçalho do Drawer */}
+          </Typography>
+          <Divider textAlign="left">Categorias</Divider>
+          <MenuCategoria onClose={handleDrawerClose} />
+          <Divider textAlign="left">Você</Divider>
+          <BotoesDeNavegacao onClose={handleDrawerClose} />
+        </Box>
+      </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '10px' }}>
-       
+        {/* Conteúdo principal da página */}
       </Box>
     </Box>
   );

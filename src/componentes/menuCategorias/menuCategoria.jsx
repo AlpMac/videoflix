@@ -6,12 +6,12 @@ import Typography from '@mui/material/Typography';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useNavigate } from 'react-router-dom';
-
+import api from '../../services/api.js';
+import { useEffect, useState } from 'react';
 
 const MenuButton = styled(Button)(({ theme }) => ({
   width: '100%',
   justifyContent: 'space-between',
-  //padding: theme.spacing(1.0),
   backgroundColor: 'transparent',
   color: theme.palette.text.primary,
   border: `0px solid ${theme.palette.divider}`,
@@ -33,80 +33,81 @@ const SubmenuItem = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function MenuCategoria() {
+export default function MenuCategoria({ onClose }) {
   const navigate = useNavigate();
 
-  const Menus = [
-    {
-      id: 1,
-      title: 'Sistemas',
-      submenu: [
-        {
-          id: 1.1,
-          title: 'SIGDEM',
-        },
-        {
-          id: 1.2,
-          title: 'LOTUS',
-        },
-        {
-          id: 1.3,
-          title: 'WINDOWS',
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: 'SIC',
-      submenu: [
-        {
-          id: 2.1,
-          title: 'KAPESKY',
-        },
-        {
-          id: 2.2,
-          title: 'PALESTRAS',
-        },
-      ],
-    },
-    {
-      id: 3,
-      title: 'INFRA-ESTRUTURA',
-    },
-  ];
+  const [listaMenu, setListaMenu] = useState([]);
 
-  const [expandedMenus, setExpandedMenus] = React.useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/listar-menu`);
+        const data = response.data;
+
+        // Transformar os dados para agrupar submenus sob menus principais
+        const menuMap = {};
+
+        data.forEach(item => {
+          const { id, id_menu_principal, descricao_menu, id_sub_menu, descricao_submenu } = item;
+
+          if (!menuMap[id_menu_principal]) {
+            menuMap[id_menu_principal] = {
+              id_menu_principal,
+              descricao_menu,
+              submenu: []
+            };
+          }
+
+          if (id && descricao_submenu) {
+            menuMap[id_menu_principal].submenu.push({
+              id,
+              descricao_submenu
+            });
+          }
+        });
+
+        const listaMenuTransformed = Object.values(menuMap);
+        setListaMenu(listaMenuTransformed);
+      } catch (err) {
+        console.error("Erro ao buscar dados:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const [expandedMenus, setExpandedMenus] = useState({});
 
   const handleClick = (id) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setExpandedMenus((prev) => {
+      const newState = { ...prev, [id]: !prev[id] };
+      return newState;
+    });
   };
 
-  const handleCategoriaClick =(id,title) => {
-   navigate(`/categoria/${id}`)
-  }
+  const handleCategoriaClick = (id) => {
+    navigate(`/categoria/${id}`);
+    onClose(); // Chama o evento onClose vindo das props
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="stretch" p={2}>
-      {Menus.map((menu) => (
-        <Box key={menu.id} mb={1}>
+      {listaMenu.map((menu) => (
+        <Box key={menu.id_menu_principal} mb={1}>
           <MenuButton
-            onClick={() => handleClick(menu.id)}
+            onClick={() => handleClick(menu.id_menu_principal)}
             endIcon={<KeyboardArrowDownIcon />}
           >
-            <Typography variant="body2" >
-              {menu.title}
+            <Typography variant="body2">
+              {menu.descricao_menu}
             </Typography>
           </MenuButton>
-          {expandedMenus[menu.id] && (
+          {expandedMenus[menu.id_menu_principal] && (
             <Box ml={2} mt={1}>
-              {menu.submenu && menu.submenu.map((submenuItem) => (
+              {menu.submenu.map((submenuItem) => (
                 <SubmenuItem key={submenuItem.id}
-                 onClick={() => handleCategoriaClick(submenuItem.id,submenuItem.title)}
+                  onClick={() => handleCategoriaClick(submenuItem.id)}
                 >
-                  <Typography variant="body1">{submenuItem.title}</Typography>
+                  <Typography variant="body1">{submenuItem.descricao_submenu}</Typography>
                   <ArrowRightIcon />
                 </SubmenuItem>
               ))}
