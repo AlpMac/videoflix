@@ -28,7 +28,7 @@ function Rotas(props){
                 <Route path="/" element={<Home />} />
                 <Route path="/categoria/:id_categoria" element={<Home />} />
                
-                
+                 
                 <Route path="/cadastrar-video" element={<CadastrarVideo />} />
                 <Route path="/video/:id" element={<Video />} />          {/*link1="Seus Videos" link2=' ' usaremos depois para barra infinita*/ }  
                 <Route path="/meus-videos/:id_usuario" element={<MeusVideos />  } />

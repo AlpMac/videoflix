@@ -6,17 +6,22 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import { AlignHorizontalRight } from '@mui/icons-material';
+import { AlignHorizontalRight, Padding } from '@mui/icons-material';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import PlayCircleFilledRoundedIcon from '@mui/icons-material/PlayCircleFilledRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useEffect, useState } from 'react';
 import api from '../../services/api.js';
 import {servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function ListarCanais() {
 
-    
+    const navigate = useNavigate();
+
+    const openVideo = (id) => {
+      navigate(`/meus-videos/${id}`);
+    };
     const [listaDadosUsuario, setlistaDadosUsuario] = useState([]);
 
     useEffect(() => {
@@ -31,11 +36,26 @@ export default function ListarCanais() {
     }, []);
 
   return (
-    <Container>
+    <Container 
+    sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        marginTop: '20px', 
+        marginBottom: '20px' 
+    }}
+    
+    >
+
+
     <Grid container spacing={3}>     
     {listaDadosUsuario.map((dadosUsuario) => (
         <Grid item xs={12} sm={6} md={4} key={dadosUsuario.id_usuario}>
-                        <Card sx={{ maxWidth: 345 }}>
+                        <Card sx={{ maxWidth: 345 }}
+                         onClick={() => openVideo(dadosUsuario.id_usuario)}
+                        >
+                       
+
                         <CardActionArea>
                         
                             <CardMedia
@@ -55,7 +75,7 @@ export default function ListarCanais() {
                         </CardActionArea>
                         <CardActions>
                             <Button size="small" color="primary">
-                            Acessar 
+                            Acessar Canal
                             </Button>
                             <Container
                                     sx={{

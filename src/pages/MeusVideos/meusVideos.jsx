@@ -7,9 +7,16 @@ import { usuarioLogado } from '../../utils/global.js';
 
 function MeusVideos(props) {
      
-    //const { id_usuario } = useParams();
+    const { id_usuario } = useParams();
+    console.log ("id_usuario", id_usuario);
     //const id_usuario = props.id_usuario;
-    const id_usuario = usuarioLogado;
+   /* let id_usuario;
+    
+    if (props.id_usuario !== undefined) {
+        id_usuario = props.id_usuario;
+    } else {
+        id_usuario = usuarioLogado;
+    }*/
   return (
     <>        
         <Container maxWidth='xl'>
@@ -33,7 +40,7 @@ function MeusVideos(props) {
                          categoriaId ={null}
                          favorito={0}
                          searchQuery={''}
-                         caminho="nos seus vídeos enviados"
+                         caminho="nos vídeos enviados do canal"
                          //link1={props.link1}
                          //link2={props.link2}
                          />

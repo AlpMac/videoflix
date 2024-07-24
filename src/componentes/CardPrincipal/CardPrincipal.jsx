@@ -29,7 +29,8 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
         if (favorito) {
           response = await api.get(`/meus-videos-favoritos/${usuarioLogado}`);
         } else if (canalId) {
-          response = await api.get(`/meus-videos/${usuarioLogado}`);
+          //response = await api.get(`/meus-videos/${usuarioLogado}`);
+          response = await api.get(`/meus-videos/${canalId}`);
         } else if (categoriaId) {
           response = await api.get(`/categoria/${categoriaId}`);
         } else {
