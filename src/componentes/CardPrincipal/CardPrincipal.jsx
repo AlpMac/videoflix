@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
 import api from '../../services/api.js';
 import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usuarioLogado } from '../../utils/global.js';
@@ -20,32 +21,34 @@ import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usua
 const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
   const [listaVideos, setListaVideos] = useState([]);
   const [pesquisa, setPesquisa] = useState('');
+  const [loading, setLoading] = useState(true); // Estado de carregamento
   const [keyForcingEffect, setKeyForcingEffect] = useState(0); // Key para forçar reexecução do useEffect
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response;
-        if (favorito) {
-          response = await api.get(`/meus-videos-favoritos/${usuarioLogado}`);
-        } else if (canalId) {
-          //response = await api.get(`/meus-videos/${usuarioLogado}`);
-          response = await api.get(`/meus-videos/${canalId}`);
-        } else if (categoriaId) {
-          response = await api.get(`/categoria/${categoriaId}`);
-        } else {
-          response = await api.get(`/`);
-       
-        }
-
-        setListaVideos(response.data);
-      } catch (err) {
-        console.error("Erro ao buscar dados:", err);
-      }
-    };
-
-    fetchData();
-  }, [canalId, favorito, categoriaId, keyForcingEffect]); // Incluímos keyForcingEffect para forçar reexecução
+    setLoading(true); // Define loading como true quando a requisição começa
+    api.get(`/listar_canais`)
+        .then((response) => {
+           
+            if (favorito) {
+                response = api.get(`/meus-videos-favoritos/${usuarioLogado}`);
+            } else if (canalId) {
+                response = api.get(`/meus-videos/${canalId}`);
+            } else if (categoriaId) {
+                response = api.get(`/categoria/${categoriaId}`);
+            } else {
+                response = api.get(`/`);
+            }
+            return response;
+        })
+        .then((response) => {
+            setListaVideos(response.data);
+            setLoading(false); // Define loading como false quando os dados são carregados
+        })
+        .catch((err) => {
+            console.error("Erro ao buscar dados:", err);
+            setLoading(false); // Define loading como false em caso de erro
+        });
+  }, [canalId, favorito, categoriaId, keyForcingEffect]);// Incluímos keyForcingEffect para forçar reexecução
 
   const navigate = useNavigate();
 
@@ -77,10 +80,11 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
         onChange={handlePesquisaChange}
       />
       <Grid container spacing={3}>
-        <Card id="nothing-alert" sx={{ display: 'none' }}>
-          Não encontrado
-        </Card>
-        {listaFiltrada.length > 0 ? (
+        {loading ? (
+          <Grid item xs={12}>
+            <CircularProgress />
+          </Grid>
+        ) : listaFiltrada.length > 0 ? (
           listaFiltrada.map((video) => (
             <Grid item xs={12} sm={6} md={4} key={video.id_video}>
               <Card className="Card-principal" sx={{ maxWidth: 345 }}>

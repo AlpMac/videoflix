@@ -8,7 +8,6 @@ import { usuarioLogado } from '../../utils/global.js';
 function MeusVideos(props) {
      
     const { id_usuario } = useParams();
-    console.log ("id_usuario", id_usuario);
     //const id_usuario = props.id_usuario;
    /* let id_usuario;
     

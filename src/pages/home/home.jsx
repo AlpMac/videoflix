@@ -4,29 +4,28 @@ import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api.js';
 
-function Home() {
-  const { id_categoria } = useParams();
+function Home(props) {
+  const  {id_categoria}  = useParams();
   const [categoriaId, setCategoriaId] = useState(null);
   const [nomeCategoria, setNomeCategoria] = useState({});
   let texto = 'em todos os canais';
 
   useEffect(() => {
 
-    if (id_categoria) {
-      setCategoriaId(id_categoria);
-
-      if (id_categoria) {
-        api.get('/categoria/' + id_categoria)
+    if (id_categoria) {      
+       api.get('/categoria/' + id_categoria)
           .then((response) => {
             setNomeCategoria(response.data);
           })
           .catch((err) => {
             console.error("Erro ao buscar nome da categoria:", err);
           });
+
+          setCategoriaId(id_categoria);
       } 
-    } 
-    
+        
     else {
+      console.log("Categoria não informada");
       setCategoriaId(null);
     }
   }, [id_categoria]);
@@ -43,7 +42,7 @@ function Home() {
           <CardPrincipal
             canalId={null}
             categoriaId={categoriaId}
-            favorito={0}
+            favorito={null}
             searchQuery={''}
             caminho={texto}
           />
