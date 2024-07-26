@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
@@ -12,33 +11,32 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Drawer from '@mui/material/Drawer';
-import BannerMensagem from '../../componentes/BannerMensagem/BannerMensagem.jsx';
 import Avatar from '@mui/material/Avatar';
+import Popover from '@mui/material/Popover';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Divider from '@mui/material/Divider';
+import api from '../../services/api.js';
+import BotoesAdmin from '../../componentes/BotoesAdmin/BotoesAdmin.jsx';
+import Relatorios from '../../componentes/Relatorios/Relatorios.jsx';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 import Logotipo from '../../componentes/logotipo/logotipo.jsx';
-import NotificationPopup from '../../componentes/notificacaPopUp/notificacaoPopUp.jsx'; // Verifique se o caminho do componente está correto
-import Popover from '@mui/material/Popover'; // Importe o Popover do Material-UI
-import api from '../../services/api.js'; // Importe a instância do Axios ou fetch
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import { Button } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+const arrayPerfil = {
+  fotoPerfil: 'url_da_foto_perfil',
+  nome: 'Nome do Usuário',
+};
 
 export default function PrimarySearchAppBar() {
-  const arrayPerfil = {
-    idUsuario: 1,
-    nome: '3º-PD-Alpande',
-    fotoPerfil: 'https://avatars.githubusercontent.com/u/89029909?v=4',
-    perfil: '1',
-  };
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null);
-  const [listaNotificacao, setListaNotificacao] = useState([]); // Corrigido para setListaNotificacao
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
+  const [listaNotificacao, setListaNotificacao] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    // Exemplo de uso do useEffect para buscar notificações
-    // Supondo que 'api' seja a instância correta do Axios ou fetch
     api.get(`/notificacao`)
       .then((response) => {
         setListaNotificacao(response.data);
@@ -46,7 +44,7 @@ export default function PrimarySearchAppBar() {
       .catch((err) => {
         console.error("Erro ao buscar notificações:", err);
       });
-  }, []); // Array vazio indica que useEffect será executado apenas uma vez, após a montagem
+  }, []);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -72,13 +70,19 @@ export default function PrimarySearchAppBar() {
     setNotificationsAnchorEl(null);
   };
 
-  const menuId = 'PerfilWEB';
+  const handleRelatorioClick = () => {
+    setOpenModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
 
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
+      id="PerfilWEB"
       keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={Boolean(anchorEl)}
@@ -116,10 +120,10 @@ export default function PrimarySearchAppBar() {
             onClick={handleDrawerOpen}
           >
             <MenuIcon />
-          </IconButton>
-          <Logotipo />
+            
+          </IconButton>      <Logotipo />
+
           <Box sx={{ flexGrow: 1 }} />
-          <BannerMensagem />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -167,32 +171,22 @@ export default function PrimarySearchAppBar() {
           horizontal: 'right',
         }}
       >
-
-      <Box sx={{ p: 2 }}>
-        
-            {listaNotificacao.map((notification, id) => (
-              <> <Divider orientation="horizontal"  />
-               <Box key={id} sx={{ display: 'flex', alignItems: 'center', mb:2 ,mt:2 }}>
-                <Avatar src={arrayPerfil.fotoPerfil} sx={{ mr: 2 }}></Avatar> {/* Ícone da esquerda, você pode substituir pela imagem que quiser */}
-                <Box>
-                  <Typography>{notification.notificacao}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Enviado por: TESTE
-                  </Typography>
-                  <Typography variant="body1" color="textTerciario">
-                  <Button variant="contained" size="small" endIcon={<AnnouncementIcon />}>
-                      Ler 
-                    </Button>
-                  </Typography>
-                 
-                </Box>
-               
-              
-              </Box></>
-            ))}
-       </Box>
-      
-      
+        <Box sx={{ p: 2 }}>
+          {listaNotificacao.map((notification, id) => (
+            <Box key={id} sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2 }}>
+              <Avatar src={arrayPerfil.fotoPerfil} sx={{ mr: 2 }} />
+              <Box>
+                <Typography>{notification.notificacao}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Enviado por: TESTE
+                </Typography>
+                <Button variant="contained" size="small" endIcon={<AnnouncementIcon />}>
+                  Ler
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Box>
       </Popover>
       <Drawer
         sx={{
@@ -201,30 +195,49 @@ export default function PrimarySearchAppBar() {
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
-            marginTop: '64px',
-            height: 'calc(100% - 64px)',
-            display: 'flex',
-            flexDirection: 'column',
           },
         }}
-        variant="temporary"
         anchor="left"
         open={openDrawer}
         onClose={handleDrawerClose}
-      >
-        <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-          <Typography variant="h6" sx={{ padding: '10px' }}>
-            {/* Conteúdo do cabeçalho do Drawer */}
-          </Typography>
-          <Divider textAlign="left">Categorias</Divider>
-          <MenuCategoria onClose={handleDrawerClose} />
-          <Divider textAlign="left">Você</Divider>
+      > <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', p: 0.5 }}>
+          <IconButton onClick={handleDrawerClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ overflow: 'auto' }}>
+        
+        <Divider textAlign="left"
+        
+        >Categorias </Divider>
+          <MenuCategoria onClose={handleDrawerClose}/>
+          <Divider textAlign="left">Navegação</Divider>
+
           <BotoesDeNavegacao onClose={handleDrawerClose} />
+          <Divider textAlign="left">Administração</Divider>
+          <BotoesAdmin onClose={handleDrawerClose} onRelatorioClick={handleRelatorioClick} />
+          <Divider />
         </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '10px' }}>
-        {/* Conteúdo principal da página */}
-      </Box>
+      <Modal
+        open={openModal}
+        onClose={handleModalClose}
+        aria-labelledby="relatorio-modal-title"
+        aria-describedby="relatorio-modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '70%',
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+        }}>
+          <Relatorios />
+        </Box>
+      </Modal>
     </Box>
   );
 }

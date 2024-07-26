@@ -3,6 +3,7 @@ import { Container, CssBaseline } from '@mui/material';
 import CardPrincipal from '../../componentes/CardPrincipal/CardPrincipal.jsx';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api.js';
+import { Padding } from '@mui/icons-material';
 
 function Home(props) {
   const  {id_categoria}  = useParams();
@@ -36,9 +37,10 @@ function Home(props) {
 
   return (
     <>        
-      <Container maxWidth='xl'>
+<Container maxWidth='xl'>
         <CssBaseline />
-        <Container>    
+        <Container
+        >    
           <CardPrincipal
             canalId={null}
             categoriaId={categoriaId}

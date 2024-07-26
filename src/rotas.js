@@ -8,12 +8,13 @@ import MeusVideos from './pages/MeusVideos/meusVideos.jsx'
 import PrimarySearchAppBar from './pages/topbar/topbar.jsx';
 import MeusVideosFavoritos from './pages/meusVideosFavoritos/meusVideosFavoritos.jsx';
 import NotificationPopup from '../src/componentes/notificacaPopUp/notificacaoPopUp.jsx';
+import { Container } from '@mui/material';
 
 function Rotas(props){
 
     return (
             <BrowserRouter>
-            <PrimarySearchAppBar />
+                        <PrimarySearchAppBar />
                     {/*<div OS BOTOES FORAM PARA O MENU 
                     id="BotoesDeNavegacao"
                     style={{
@@ -24,7 +25,9 @@ function Rotas(props){
                     }}
                     >
                 <BotoesDeNavegacao /></div>*/}
+                <Container maxWidth='xl' sx={{ paddingTop: '60px' }}>
                 <Routes>
+                
                 <Route path="/" element={<Home />} />
                 <Route path="/categoria/:id_categoria" element={<Home />} />
                
@@ -35,6 +38,8 @@ function Rotas(props){
                 <Route path="/meus-videos-favoritos/:id_usuario" element={<MeusVideosFavoritos />} />
                 <Route path="/listar_canais" element={<VerCanais />} />
                 </Routes>
+                </Container> 
+
 
             </BrowserRouter>
             );

@@ -17,6 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import api from '../../services/api.js';
 import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usuarioLogado } from '../../utils/global.js';
+import BotoesAdmin from '../BotoesAdmin/BotoesAdmin.jsx';
 
 const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
   const [listaVideos, setListaVideos] = useState([]);
@@ -160,7 +161,9 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
             <Typography variant="body1">Nenhum vídeo encontrado.</Typography>
           </Grid>
         )}
+         
       </Grid>
+     
     </Container>
   );
 };
