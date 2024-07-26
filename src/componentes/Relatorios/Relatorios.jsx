@@ -53,8 +53,21 @@ const GraficoRelatorio = () => {
 
   return (
     <div>
-      <button onClick={fetchRelatorio1Data} disabled={loading}>
-        {loading ? 'Carregando...' : 'Buscar Dados'}
+      <button onClick={fetchRelatorio1Data} disabled={loading}
+      style={{
+        backgroundColor: '#4CAF50',
+        border: 'none',
+        color: 'white',
+        padding: '15px 32px',
+        textAlign: 'center',
+        textDecoration: 'none',
+        display: 'inline-block',
+        fontSize: '16px',
+        margin: '4px 2px',
+        cursor: 'pointer'
+      }}
+      >
+        {loading ? 'Carregando...' : 'Videos Enviados por Usuário'}
       </button>
       <div>
         {chartData.labels.length > 0 && (
