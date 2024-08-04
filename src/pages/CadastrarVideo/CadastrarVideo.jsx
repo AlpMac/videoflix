@@ -5,49 +5,161 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import LoadingVideo from '../../componentes/LoadingVideo/LoadingVideo';
-import NestedModal from '../../componentes/ModalComBotao/ModalComBotao';
+import { useEffect, useState } from 'react';
+import api from '../../services/api';
+import { Select, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { FormControl, InputLabel } from '@mui/material';
+import { TextareaAutosize } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import LinearProgress from '@mui/material/LinearProgress';
 
-// Dados viram do banco de dados
-const categorias = [
-  { Id: 1, Categoria: 'Sistemas' },
-  { Id: 2, Categoria: 'Infraestrutura' },
-  { Id: 3, Categoria: 'SIC' }
-];
-
-const filterOptions = createFilterOptions({
-  matchFrom: 'start',
-  stringify: (option) => option.title,
+// Componente FileUpload estilizado
+const Input = styled('input')({
+  display: 'none',
 });
 
-const steps = [
-  {
-    label: 'Dados do Vídeo',
-    description: `Digite o título do seu vídeo.`,
-  },
-  {
-    label: 'Descrição do Vídeo',
-    description: '',
-  },
-  {
-    label: 'Escolha a Categoria',
-    description: ``,
-  },
-];
+const FileUpload = ({ onFileChange, fileName, accept, label }) => {
+  const fileInputRef = React.useRef(null);
 
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
+
+  return (
+    <Box sx={{ marginBottom: '20px' }}>
+      <Input
+        type="file"
+        ref={fileInputRef}
+        onChange={onFileChange}
+        accept={accept}
+      />
+      <Button variant="contained" onClick={handleClick} component="span">
+        {label}
+      </Button>
+      {fileName && (
+        <Typography variant="body1" sx={{ marginTop: '10px' }}>
+          {fileName}
+        </Typography>
+      )}
+    </Box>
+  );
+};
+
+// Função principal
 export default function CadastrarVideo() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [videoTitle, setVideoTitle] = React.useState('');
   const [videoDescription, setVideoDescription] = React.useState('');
-  const [titleChars, setTitleChars] = React.useState(0);
-  const [descChars, setDescChars] = React.useState(0);
-  const [selectedCategory, setSelectedCategory] = React.useState('');
   const [selectedCategoryId, setSelectedCategoryId] = React.useState(null);
-  const [openNestedModal, setOpenNestedModal] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [modalMessage, setModalMessage] = React.useState('');
+  const [dadosCategoria, setDadosCategoria] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFilePDF, setSelectedFilePDF] = useState(null);
+  const [selectedFileThumbnail, setSelectedFileThumbnail] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Enviando vídeo...');
+  const [openLoadingModal, setOpenLoadingModal] = React.useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    api.get('/listar-menu')
+      .then((response) => {
+        setDadosCategoria(response.data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar Categoria:", err);
+      });
+  }, []);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === 'video/mp4') {
+      setSelectedFile(file);
+    } else {
+      alert('Por favor, selecione um arquivo de vídeo MP4.');
+    }
+  };
+
+  const handleFileChangethumbnail = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === 'image/jpeg') {
+      setSelectedFileThumbnail(file);
+    } else {
+      alert('Por favor, selecione um arquivo de imagem JPEG.');
+    }
+  };
+
+  const handleFileChangePdf = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setSelectedFilePDF(file);
+    } else {
+      alert('Por favor, selecione um arquivo PDF.');
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !selectedFileThumbnail || !videoTitle || !videoDescription || !selectedCategoryId) {
+      setModalMessage("Preencha todos os campos antes de enviar.");
+      setOpenModal(true);
+      return;
+    }
+
+    setLoading(true);
+    setOpenLoadingModal(true); // Abrir modal de carregamento
+    setLoadingMessage('Enviando vídeo...');
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('filethumbnail', selectedFileThumbnail);
+    formData.append('title', videoTitle);
+    formData.append('description', videoDescription);
+    formData.append('categoryId', selectedCategoryId);
+
+    try {
+      const response = await api.post('/enviar-video', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(progress);
+        },
+      });
+
+      const videoUrl = response.data.video;
+      const videoThumbnail = response.data.thumbnail;
+
+      if (!videoUrl || !videoThumbnail) {
+        throw new Error('URL do vídeo ou thumbnail não recebidos.');
+      }
+
+      await api.post('/enviar-video-dados', {
+        titulo: videoTitle,
+        descricao: videoDescription,
+        url: videoUrl,
+        id_enviado: 1,
+        id_categoria: selectedCategoryId,
+        thumbnail: videoThumbnail,
+      });
+
+      setModalMessage("Vídeo enviado com sucesso!");
+      setOpenModal(true);
+      setActiveStep(steps.length); // Mover para a etapa final
+    } catch (error) {
+      console.error('Erro ao enviar o vídeo:', error);
+      setModalMessage('Ocorreu um erro ao enviar o vídeo.');
+      setOpenModal(true);
+    } finally {
+      setLoading(false);
+      setOpenLoadingModal(false); // Fechar modal de carregamento
+    }
+  };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -59,33 +171,60 @@ export default function CadastrarVideo() {
 
   const handleReset = () => {
     setActiveStep(0);
+    setVideoTitle('');
+    setVideoDescription('');
+    setSelectedCategoryId(null);
+    setSelectedFile(null);
+    setSelectedFileThumbnail(null);
+    setSelectedFilePDF(null);
+    setUploadProgress(0);
+    navigate("/");
   };
 
-  const handleCategoryChange = (event, value) => {
-    setSelectedCategoryId(value ? value.Id : null);
+  const handleCategoryChange = (event) => {
+    setSelectedCategoryId(event.target.value);
   };
 
   const handleSalvar = () => {
-    console.log('Salvando dados do vídeo');
-
-    handleOpenNestedModal(); // Abre o modal aninhado
+    handleUpload();
   };
 
-  const handleOpenNestedModal = () => {
-    setOpenNestedModal(true);
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   const handleTitleChange = (event) => {
     const value = event.target.value.slice(0, 60); // Limita a 60 caracteres
     setVideoTitle(value);
-    setTitleChars(value.length);
   };
 
   const handleDescriptionChange = (event) => {
     const value = event.target.value.slice(0, 500); // Limita a 500 caracteres
     setVideoDescription(value);
-    setDescChars(value.length);
   };
+
+  const steps = [
+    {
+      label: 'Dados do Vídeo',
+      description: 'Digite o título do seu vídeo.',
+    },
+    {
+      label: 'Descrição do Vídeo',
+      description: '',
+    },
+    {
+      label: 'Escolha a Categoria',
+      description: '',
+    },
+    {
+      label: 'Enviar o Vídeo e Thumbnail',
+      description: '',
+    },
+    {
+      label: 'Arquivos Complementares',
+      description: '',
+    }
+  ];
 
   return (
     <>
@@ -98,81 +237,151 @@ export default function CadastrarVideo() {
                 <StepContent>
                   <Typography>{step.description}</Typography>
                   {index === 0 && (
-                    <div>
-                      <input
-                        type="text"
-                        placeholder="Digite o título do vídeo"
+                    <Box sx={{ margin: '20px' }}>
+                      <TextField
+                        label="Digite o título do vídeo"
+                        variant="outlined"
+                        fullWidth
                         value={videoTitle}
                         onChange={handleTitleChange}
-                        style={{ width: '100%', marginBottom: '10px' }}
+                        inputProps={{ maxLength: 60 }}
+                        sx={{ marginBottom: '10px' }}
                       />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Typography variant="caption">{titleChars}/60 caracteres</Typography>
-                      </div>
-                    </div>
+                    </Box>
                   )}
 
                   {index === 1 && (
-                    <div>
-                      <textarea
+                    <Box sx={{ margin: '20px' }}>
+                      <TextareaAutosize
                         placeholder="Digite a descrição do vídeo"
                         value={videoDescription}
                         onChange={handleDescriptionChange}
-                        style={{ width: '100%', minHeight: '100px', resize: 'vertical', marginBottom: '10px' }}
+                        minRows={5}
+                        maxRows={10}
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          fontSize: '15px',
+                          resize: 'vertical',
+                          marginBottom: '10px',
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                          borderRadius: '4px',
+                        }}
                       />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Typography variant="caption">{descChars}/500 caracteres</Typography>
-                      </div>
-                    </div>
+                    </Box>
                   )}
 
                   {index === 2 && (
-                    <div>
-                      <Autocomplete
-                        id="filter-demo"
-                        options={categorias}
-                        getOptionLabel={(option) => option.Categoria}
-                        filterOptions={filterOptions}
-                        onChange={handleCategoryChange}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Categoria" />}
+                    <div style={{ margin: '20px' }}>
+                      <FormControl variant="outlined" fullWidth>
+                        <InputLabel id="categoria-label">Categoria</InputLabel>
+                        <Select
+                          labelId="categoria-label"
+                          value={selectedCategoryId}
+                          onChange={handleCategoryChange}
+                          label="Categoria"
+                        >
+                          {dadosCategoria.map((categoria) => (
+                            <MenuItem key={categoria.id} value={categoria.id}>
+                            {`${categoria.descricao_menu} > ${categoria.descricao_submenu}`}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {index === 3 && (
+                    <div style={{ margin: '20px' }}>
+                      <FileUpload
+                        onFileChange={handleFileChange}
+                        fileName={selectedFile ? selectedFile.name : ''}
+                        accept="video/mp4"
+                        label="Escolher Vídeo"
+                      />
+                      <FileUpload
+                        onFileChange={handleFileChangethumbnail}
+                        fileName={selectedFileThumbnail ? selectedFileThumbnail.name : ''}
+                        accept="image/jpeg"
+                        label="Escolher Thumbnail"
                       />
                     </div>
                   )}
 
-                  <Box sx={{ mb: 2 }}>
-                    <div>
-                      <Button variant="contained" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
-                        {index === steps.length - 1 ? 'Enviar' : 'Continuar'}
-                      </Button>
-                      <Button disabled={index === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
-                        Voltar
-                      </Button>
+                  {index === 4 && (
+                    <div style={{ margin: '20px' }}>
+                      <FileUpload
+                        onFileChange={handleFileChangePdf}
+                        fileName={selectedFilePDF ? selectedFilePDF.name : ''}
+                        accept="application/pdf"
+                        label="Escolher PDF"
+                      />
                     </div>
+                  )}
+
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleBack}
+                      disabled={activeStep === 0}
+                      sx={{ marginRight: 1 }}
+                    >
+                      Voltar
+                    </Button>
+                    {activeStep === steps.length - 1 ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSalvar}
+                        disabled={loading}
+                      >
+                        {loading ? 'Enviando...' : 'Salvar'}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                      >
+                        Próximo
+                      </Button>
+                    )}
                   </Box>
                 </StepContent>
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length && (
-            <Paper square elevation={0} sx={{ p: 3 }}>
-              <Typography>Dados armazenados para SALVAR !</Typography>
-              <Button onClick={handleSalvar} sx={{ mt: 1, mr: 1 }}>
-                Salvar
-              </Button>
-              <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                Reiniciar
-              </Button>
-            </Paper>
-          )}
-        </Box>
-
-        <Box sx={{ display: { xs: '22', md: 'flex', marginLeft: 20 } }}>
-          <LoadingVideo title={videoTitle} description={videoDescription} />
         </Box>
       </Box>
-      <NestedModal open={openNestedModal} handleClose={() => setOpenNestedModal(false)} />
 
+      {/* Modal de carregamento */}
+      <Dialog open={openLoadingModal} onClose={() => setOpenLoadingModal(false)}>
+        <DialogTitle>Carregando</DialogTitle>
+        <DialogContent>
+          <Typography>{loadingMessage}</Typography>
+          <Box sx={{ width: '100%', marginTop: 2 }}>
+            <LinearProgress variant="determinate" value={uploadProgress} />
+            <Typography variant="body2" align="center" sx={{ marginTop: 1 }}>
+              {uploadProgress}%
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenLoadingModal(false)} disabled={loading}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal de mensagem */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Mensagem</DialogTitle>
+        <DialogContent>
+          <Typography>{modalMessage}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

@@ -67,7 +67,7 @@ const GraficoRelatorio = () => {
         cursor: 'pointer'
       }}
       >
-        {loading ? 'Carregando...' : 'Videos Enviados por Usuário'}
+        {loading ? 'Carregando...' : 'Total de Videos Enviados por Usuário'}
       </button>
       <div>
         {chartData.labels.length > 0 && (
