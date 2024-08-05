@@ -37,6 +37,8 @@ function Rotas(props){
                 <Route path="/meus-videos/:id_usuario" element={<MeusVideos />  } />
                 <Route path="/meus-videos-favoritos/:id_usuario" element={<MeusVideosFavoritos />} />
                 <Route path="/listar_canais" element={<VerCanais />} />
+                {/* AREA ADMIN */}
+                <Route path="/video/editar/:id" element={<CadastrarVideo />} />
                 </Routes>
                 </Container> 
 

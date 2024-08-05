@@ -3,6 +3,7 @@ import { Box, Container, List, ListItem, ListItemIcon, ListItemText } from '@mui
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import VideoSettingsIcon from '@mui/icons-material/VideoSettings';
 
 const navigate = (path) => {
   // Implementação da navegação
@@ -16,6 +17,7 @@ export default function BotoesAdmin({ onClose, onRelatorioClick }) {
     { id: 'Enviar Mensagem', label: 'Enviar Mensagem', icon: <AddCommentIcon fontSize="medium" />, onClick: () => navigate("/") },
     { id: 'Relatorios', label: 'Relatórios', icon: <AutoGraphIcon fontSize="medium" />, onClick: onRelatorioClick },
     { id: 'Gerenciar Usuarios', label: 'Gerenciar Usuários', icon: <ManageAccountsIcon fontSize="medium" />, onClick: () => navigate(`/meus-videos-favoritos/${usuarioLogado}`) },
+    { id: 'Gerenciar Videos', label: 'Gerenciar Videos', icon: <VideoSettingsIcon fontSize="medium" />, onClick: () => navigate(`/meus-videos-favoritos/${usuarioLogado}`) },
   ];
 
   const handleItemClick = (onClick) => {

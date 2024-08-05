@@ -15,6 +15,8 @@ import { TextareaAutosize } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useParams } from 'react-router-dom';
+
 
 // Componente FileUpload estilizado
 const Input = styled('input')({
@@ -29,6 +31,8 @@ const FileUpload = ({ onFileChange, fileName, accept, label }) => {
   };
 
   return (
+
+
     <Box sx={{ marginBottom: '20px' }}>
       <Input
         type="file"
@@ -64,7 +68,16 @@ export default function CadastrarVideo() {
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('Enviando vídeo...');
   const [openLoadingModal, setOpenLoadingModal] = React.useState(false);
+
+  
   const navigate = useNavigate();
+
+  // iremos pegaro o parametro de id se existir para que os campos venham preenchidos
+  let { id } = useParams();
+
+  if (id){
+    console.log('TEM ID' + id);
+  }
 
   useEffect(() => {
     api.get('/listar-menu')

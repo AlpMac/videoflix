@@ -17,19 +17,19 @@ import CircularProgress from '@mui/material/CircularProgress';
 import api from '../../services/api.js';
 import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usuarioLogado } from '../../utils/global.js';
-import BotoesAdmin from '../BotoesAdmin/BotoesAdmin.jsx';
+import { Button } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
   const [listaVideos, setListaVideos] = useState([]);
   const [pesquisa, setPesquisa] = useState('');
-  const [loading, setLoading] = useState(true); // Estado de carregamento
-  const [keyForcingEffect, setKeyForcingEffect] = useState(0); // Key para forçar reexecução do useEffect
+  const [loading, setLoading] = useState(true);
+  const [keyForcingEffect, setKeyForcingEffect] = useState(0);
 
   useEffect(() => {
-    setLoading(true); // Define loading como true quando a requisição começa
+    setLoading(true);
     api.get(`/listar_canais`)
         .then((response) => {
-           
             if (favorito) {
                 response = api.get(`/meus-videos-favoritos/${usuarioLogado}`);
             } else if (canalId) {
@@ -43,19 +43,24 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
         })
         .then((response) => {
             setListaVideos(response.data);
-            setLoading(false); // Define loading como false quando os dados são carregados
+            setLoading(false);
         })
         .catch((err) => {
             console.error("Erro ao buscar dados:", err);
-            setLoading(false); // Define loading como false em caso de erro
+            setLoading(false);
         });
-  }, [canalId, favorito, categoriaId, keyForcingEffect]);// Incluímos keyForcingEffect para forçar reexecução
+  }, [canalId, favorito, categoriaId, keyForcingEffect]);
 
   const navigate = useNavigate();
 
   const openVideo = (id) => {
     navigate(`/video/${id}`);
   };
+
+  const openVideoEdicao = (id) => {
+    navigate(`/video/editar/${id}`);
+
+  }
 
   const handlePesquisaChange = (event) => {
     setPesquisa(event.target.value);
@@ -67,8 +72,8 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
     ), [listaVideos, pesquisa]);
 
   useEffect(() => {
-    setKeyForcingEffect(prev => prev + 1); // Atualiza a key para forçar o useEffect
-  }, [categoriaId]); // Dispara sempre que categoriaId mudar
+    setKeyForcingEffect(prev => prev + 1);
+  }, [categoriaId]);
 
   return (
     <Container>
@@ -138,21 +143,26 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
                   </Typography>
                 </CardContent>
                 <CardActions disableSpacing sx={{ justifyContent: 'space-between' }}>
-                  <Container
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <IconButton aria-label="Visualizações" disableRipple>
-                      <VisibilityRoundedIcon fontSize="small" sx={{ marginRight: 0.5 }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {video.views} Visualizações
-                      </Typography>
-                    </IconButton>
-                  </Container>
+                  <IconButton aria-label="Visualizações" disableRipple>
+                    <VisibilityRoundedIcon fontSize="small" sx={{ marginRight: 0.5 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {video.views} Visualizações
+                    </Typography>
+                  </IconButton>
                 </CardActions>
+                <Button 
+                  variant="contained" 
+                  endIcon={<SettingsIcon />}
+                  onClick={() => openVideoEdicao(video.id_video)}
+                  sx={{
+                    width: '100%',
+                    marginTop: 'auto',
+                    marginBottom: '10px',
+                    
+                  }}
+                >
+                  Editar Informações
+                </Button>
               </Card>
             </Grid>
           ))
@@ -161,9 +171,7 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
             <Typography variant="body1">Nenhum vídeo encontrado.</Typography>
           </Grid>
         )}
-         
       </Grid>
-     
     </Container>
   );
 };
