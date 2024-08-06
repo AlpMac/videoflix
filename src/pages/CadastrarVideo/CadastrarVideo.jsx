@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -16,6 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useParams } from 'react-router-dom';
+import { usuarioLogado } from '../../utils/global';
+import { NineKOutlined, RepeatOneSharp } from '@mui/icons-material';
 
 
 // Componente FileUpload estilizado
@@ -56,18 +59,24 @@ const FileUpload = ({ onFileChange, fileName, accept, label }) => {
 export default function CadastrarVideo() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [videoTitle, setVideoTitle] = React.useState('');
+  const [videoId, setVideoId] = React.useState('');
   const [videoDescription, setVideoDescription] = React.useState('');
   const [selectedCategoryId, setSelectedCategoryId] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [modalMessage, setModalMessage] = React.useState('');
   const [dadosCategoria, setDadosCategoria] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState('');
   const [selectedFilePDF, setSelectedFilePDF] = useState(null);
   const [selectedFileThumbnail, setSelectedFileThumbnail] = useState(null);
+  const [selectedFileNameThumbnail, setSelectedFileNameThumbnail] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('Enviando vídeo...');
   const [openLoadingModal, setOpenLoadingModal] = React.useState(false);
+ 
+
+
 
   
   const navigate = useNavigate();
@@ -75,10 +84,36 @@ export default function CadastrarVideo() {
   // iremos pegaro o parametro de id se existir para que os campos venham preenchidos
   let { id } = useParams();
 
-  if (id){
-    console.log('TEM ID' + id);
-  }
+ // Refs para armazenar os estados antigos
+ const prevSelectedFileName = useRef(null);
+ const prevSelectedFileNameThumbnail = useRef(null);
 
+    // Função para buscar dados do vídeo para edição
+    useEffect(() => {
+      if (id) {
+      api.get(`/video/${id}`)
+        .then((response) => {
+          setVideoId(response.data.id_video);
+          setVideoTitle(response.data.titulo_video);
+          setVideoDescription(response.data.descricao_video);
+          setSelectedCategoryId(response.data.id_categoria);
+          // Verifica se as variáveis de arquivo são URLs de string ou objetos de arquivo e ajusta conforme necessário
+          setSelectedFile({ name: response.data.url_video });
+          setSelectedFileName(response.data.url_video);
+          setSelectedFileThumbnail({ name: response.data.thumbnail });
+          setSelectedFileNameThumbnail(response.data.thumbnail);
+          setSelectedFilePDF(response.data.arquivos_complementares ? { name: response.data.arquivos_complementares } : null);
+           // Salvar os estados antigos
+           prevSelectedFileName.current = response.data.url_video;
+           prevSelectedFileNameThumbnail.current = response.data.thumbnail;
+        })
+        .catch((err) => {
+          console.error("Erro ao buscar dados do video para edição:", err);
+        });
+               }}, [id]);
+ 
+
+  
   useEffect(() => {
     api.get('/listar-menu')
       .then((response) => {
@@ -174,6 +209,93 @@ export default function CadastrarVideo() {
     }
   };
 
+  const handleUpdate = async () => {
+    if (!selectedFile && !selectedFileThumbnail && !videoTitle || !videoDescription || !selectedCategoryId) {
+      setModalMessage("Preencha todos os campos antes de enviar.");
+      setOpenModal(true);
+      return;
+    }
+
+    setLoading(true);
+    setOpenLoadingModal(true);
+    setLoadingMessage('Atualizando vídeo...');
+
+    try {
+      console.log('selectedFileName:', selectedFile.name);
+      console.log('selectedFileNameThumbnail:', selectedFileThumbnail.name);
+      // Use os valores antigos como padrão
+      let videoUrl = prevSelectedFileName.current; // Valor anterior
+      let videoThumbnail = prevSelectedFileNameThumbnail.current; // Valor anterior
+
+      // Prepare o FormData apenas se houver novos arquivos
+      const formData = new FormData();
+
+      if (selectedFile && prevSelectedFileName.current !== selectedFile.name) {
+        formData.append('file', selectedFile);
+      }
+
+      if (selectedFileThumbnail && prevSelectedFileNameThumbnail.current !== selectedFileThumbnail.name) {
+        formData.append('filethumbnail', selectedFileThumbnail);
+      }
+
+      if (formData.has('file') || formData.has('filethumbnail')) {
+        // Se novos arquivos foram adicionados, envie-os
+        const response = await api.post('/enviar-video', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+          },
+        });
+
+        // Atualize os valores com base na resposta, se não forem null
+        console.log('selectedFile:', selectedFile.name);
+        console.log('selectedFileThumbnail:', selectedFileThumbnail.name);
+        if (response.data.video == null) {
+          videoUrl =  prevSelectedFileName.current;
+        }else {
+          videoUrl = response.data.video;
+        }
+        if (response.data.thumbnail == null) {
+          videoThumbnail = prevSelectedFileNameThumbnail.current;
+        }else{
+          videoThumbnail = response.data.thumbnail;
+        }
+      
+       // videoUrl = response.data.video ? null : selectedFile.name;
+        //videoThumbnail = response.data.thumbnail || selectedFileThumbnail.name;
+      
+
+      console.log('videoThumbnail:',  prevSelectedFileNameThumbnail.current);
+      console.log('VideoCurrent:',  prevSelectedFileName.current);
+
+
+        // Atualize os dados do vídeo
+        await api.put(`/video/${id}`, {
+            titulo: videoTitle,
+            descricao: videoDescription,
+            url: videoUrl,
+            id_categoria: selectedCategoryId,
+            thumbnail: videoThumbnail,
+            id: videoId
+        });
+      }
+        setModalMessage("Vídeo atualizado com sucesso!");
+        setOpenModal(true);
+        setActiveStep(steps.length);
+    } catch (error) {
+        console.error('Erro ao atualizar o vídeo:', error);
+        setModalMessage('Ocorreu um erro ao atualizar o vídeo.');
+        setOpenModal(true);
+    } finally {
+        setLoading(false);
+        setOpenLoadingModal(false);
+    }
+};
+
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -200,6 +322,10 @@ export default function CadastrarVideo() {
 
   const handleSalvar = () => {
     handleUpload();
+  };
+
+  const handleUpdateVideo = () => {
+    handleUpdate();
   };
 
   const handleCloseModal = () => {
@@ -346,10 +472,10 @@ export default function CadastrarVideo() {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleSalvar}
+                        onClick={id ? handleUpdateVideo : handleSalvar}
                         disabled={loading}
                       >
-                        {loading ? 'Enviando...' : 'Salvar'}
+                        {loading ? 'Enviando...' : id ? 'ATUALIZAR' : 'Salvar'}
                       </Button>
                     ) : (
                       <Button
