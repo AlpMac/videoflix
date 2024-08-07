@@ -34,8 +34,6 @@ const FileUpload = ({ onFileChange, fileName, accept, label }) => {
   };
 
   return (
-
-
     <Box sx={{ marginBottom: '20px' }}>
       <Input
         type="file"
@@ -66,6 +64,7 @@ export default function CadastrarVideo() {
   const [modalMessage, setModalMessage] = React.useState('');
   const [dadosCategoria, setDadosCategoria] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFilePDFName, setSelectedFilePDFName] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState('');
   const [selectedFilePDF, setSelectedFilePDF] = useState(null);
   const [selectedFileThumbnail, setSelectedFileThumbnail] = useState(null);
@@ -87,12 +86,16 @@ export default function CadastrarVideo() {
  // Refs para armazenar os estados antigos
  const prevSelectedFileName = useRef(null);
  const prevSelectedFileNameThumbnail = useRef(null);
+ const prevSelectedFileNamePDF = useRef(null);
 
     // Função para buscar dados do vídeo para edição
     useEffect(() => {
       if (id) {
       api.get(`/video/${id}`)
         .then((response) => {
+          prevSelectedFileName.current = response.data.url_video;
+          prevSelectedFileNameThumbnail.current = response.data.thumbnail;
+          prevSelectedFileNamePDF.current = response.data.arquivos_complementares;
           setVideoId(response.data.id_video);
           setVideoTitle(response.data.titulo_video);
           setVideoDescription(response.data.descricao_video);
@@ -102,10 +105,10 @@ export default function CadastrarVideo() {
           setSelectedFileName(response.data.url_video);
           setSelectedFileThumbnail({ name: response.data.thumbnail });
           setSelectedFileNameThumbnail(response.data.thumbnail);
-          setSelectedFilePDF(response.data.arquivos_complementares ? { name: response.data.arquivos_complementares } : null);
-           // Salvar os estados antigos
-           prevSelectedFileName.current = response.data.url_video;
-           prevSelectedFileNameThumbnail.current = response.data.thumbnail;
+          setSelectedFilePDF(response.data.arquivos_complementares);
+          setSelectedFilePDFName({ name : response.data.arquivos_complementares}); // Atualize isso
+          // Atualize isso
+          console.log("arquivos_complementares"+response.data.arquivos_complementares);
         })
         .catch((err) => {
           console.error("Erro ao buscar dados do video para edição:", err);
@@ -145,7 +148,7 @@ export default function CadastrarVideo() {
   const handleFileChangePdf = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
-      setSelectedFilePDF(file);
+      setSelectedFilePDFName(file);
     } else {
       alert('Por favor, selecione um arquivo PDF.');
     }
@@ -168,6 +171,7 @@ export default function CadastrarVideo() {
     formData.append('title', videoTitle);
     formData.append('description', videoDescription);
     formData.append('categoryId', selectedCategoryId);
+    formData.append('filepdf', selectedFilePDF);
 
     try {
       const response = await api.post('/enviar-video', formData, {
@@ -182,6 +186,7 @@ export default function CadastrarVideo() {
 
       const videoUrl = response.data.video;
       const videoThumbnail = response.data.thumbnail;
+      const videoPDF = response.data.pdf;
 
       if (!videoUrl || !videoThumbnail) {
         throw new Error('URL do vídeo ou thumbnail não recebidos.');
@@ -194,6 +199,7 @@ export default function CadastrarVideo() {
         id_enviado: 1,
         id_categoria: selectedCategoryId,
         thumbnail: videoThumbnail,
+        pdf: videoPDF,
       });
 
       setModalMessage("Vídeo enviado com sucesso!");
@@ -210,7 +216,7 @@ export default function CadastrarVideo() {
   };
 
   const handleUpdate = async () => {
-    if (!selectedFile && !selectedFileThumbnail && !videoTitle || !videoDescription || !selectedCategoryId) {
+    if ((!selectedFile && !selectedFileThumbnail ) || !videoTitle || !videoDescription || !selectedCategoryId) {
       setModalMessage("Preencha todos os campos antes de enviar.");
       setOpenModal(true);
       return;
@@ -221,13 +227,10 @@ export default function CadastrarVideo() {
     setLoadingMessage('Atualizando vídeo...');
 
     try {
-      console.log('selectedFileName:', selectedFile.name);
-      console.log('selectedFileNameThumbnail:', selectedFileThumbnail.name);
-      // Use os valores antigos como padrão
-      let videoUrl = prevSelectedFileName.current; // Valor anterior
-      let videoThumbnail = prevSelectedFileNameThumbnail.current; // Valor anterior
+      const filenameAntigo = prevSelectedFileName.current;
+      const filenameThumbnailAntigo = prevSelectedFileNameThumbnail.current;
+      const filenamePDFAntigo = prevSelectedFileNamePDF.current;
 
-      // Prepare o FormData apenas se houver novos arquivos
       const formData = new FormData();
 
       if (selectedFile && prevSelectedFileName.current !== selectedFile.name) {
@@ -238,8 +241,11 @@ export default function CadastrarVideo() {
         formData.append('filethumbnail', selectedFileThumbnail);
       }
 
-      if (formData.has('file') || formData.has('filethumbnail')) {
-        // Se novos arquivos foram adicionados, envie-os
+      if (selectedFilePDFName && selectedFilePDFName.current !== selectedFilePDFName.name) {
+        formData.append('filepdf', selectedFilePDFName);
+      }
+
+      if (formData.has('file') || formData.has('filethumbnail') || formData.has('filepdf')) {
         const response = await api.post('/enviar-video', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -250,48 +256,67 @@ export default function CadastrarVideo() {
           },
         });
 
-        // Atualize os valores com base na resposta, se não forem null
-        console.log('selectedFile:', selectedFile.name);
-        console.log('selectedFileThumbnail:', selectedFileThumbnail.name);
-        if (response.data.video == null) {
-          videoUrl =  prevSelectedFileName.current;
-        }else {
-          videoUrl = response.data.video;
+        let videoUrlUpdate = filenameAntigo;
+        let videoThumbnailUpdate = filenameThumbnailAntigo;
+        let videoPDFUpdate = filenamePDFAntigo;
+
+        const videoVeioUpdate = response.data.video;
+        const thumbnailVeioUpdate = response.data.thumbnail;
+        const pdfVeioUpdate = response.data.pdf;
+
+        if (videoVeioUpdate !== "0" && thumbnailVeioUpdate !== "0" && pdfVeioUpdate !== "0") {
+          videoUrlUpdate = videoVeioUpdate;
+          videoThumbnailUpdate = thumbnailVeioUpdate;
+          videoPDFUpdate = pdfVeioUpdate;
+        } else if (videoVeioUpdate !== "0" && thumbnailVeioUpdate === "0" && pdfVeioUpdate === "0") {
+          videoUrlUpdate = videoVeioUpdate;
+          videoThumbnailUpdate = selectedFileThumbnail.name;
+          videoPDFUpdate = selectedFilePDF.name;
+        } else if (videoVeioUpdate === "0" && thumbnailVeioUpdate !== "0" && pdfVeioUpdate === "0") {
+          videoThumbnailUpdate = thumbnailVeioUpdate;
+          videoUrlUpdate = selectedFile.name;
+          videoPDFUpdate = selectedFilePDF.name;
+        } else if (videoVeioUpdate === "0" && thumbnailVeioUpdate === "0" && pdfVeioUpdate !== "0") {
+          videoPDFUpdate = pdfVeioUpdate;
+          videoUrlUpdate = selectedFile.name;
+          videoThumbnailUpdate = selectedFileThumbnail.name;
+        } else if (videoVeioUpdate !== "0" && thumbnailVeioUpdate !== "0" && pdfVeioUpdate === "0") {
+          videoUrlUpdate = videoVeioUpdate;
+          videoThumbnailUpdate = thumbnailVeioUpdate;
+          videoPDFUpdate = selectedFilePDF.name;
         }
-        if (response.data.thumbnail == null) {
-          videoThumbnail = prevSelectedFileNameThumbnail.current;
-        }else{
-          videoThumbnail = response.data.thumbnail;
-        }
-      
-       // videoUrl = response.data.video ? null : selectedFile.name;
-        //videoThumbnail = response.data.thumbnail || selectedFileThumbnail.name;
-      
 
-      console.log('videoThumbnail:',  prevSelectedFileNameThumbnail.current);
-      console.log('VideoCurrent:',  prevSelectedFileName.current);
-
-
-        // Atualize os dados do vídeo
-        await api.put(`/video/${id}`, {
-            titulo: videoTitle,
-            descricao: videoDescription,
-            url: videoUrl,
-            id_categoria: selectedCategoryId,
-            thumbnail: videoThumbnail,
-            id: videoId
+        console.log({
+          "Video Title": videoTitle,
+          "Video Description": videoDescription,
+          "Video URL": videoUrlUpdate,
+          "Selected Category ID": selectedCategoryId,
+          "Video Thumbnail": videoThumbnailUpdate,
+          "Video PDF": videoPDFUpdate,
+          "Video ID": videoId
         });
-      }
+
+        await api.put(`/video/${id}`, {
+          titulo: videoTitle,
+          descricao: videoDescription,
+          url: videoUrlUpdate,
+          id_categoria: selectedCategoryId,
+          thumbnail: videoThumbnailUpdate,
+          pdf: videoPDFUpdate,
+          id: videoId
+        });
+
         setModalMessage("Vídeo atualizado com sucesso!");
         setOpenModal(true);
         setActiveStep(steps.length);
+      }
     } catch (error) {
-        console.error('Erro ao atualizar o vídeo:', error);
-        setModalMessage('Ocorreu um erro ao atualizar o vídeo.');
-        setOpenModal(true);
+      console.error('Erro ao atualizar o vídeo:', error);
+      setModalMessage('Ocorreu um erro ao atualizar o vídeo.');
+      setOpenModal(true);
     } finally {
-        setLoading(false);
-        setOpenLoadingModal(false);
+      setLoading(false);
+      setOpenLoadingModal(false);
     }
 };
 
@@ -451,7 +476,7 @@ export default function CadastrarVideo() {
                     <div style={{ margin: '20px' }}>
                       <FileUpload
                         onFileChange={handleFileChangePdf}
-                        fileName={selectedFilePDF ? selectedFilePDF.name : ''}
+                        fileName={selectedFilePDFName ? selectedFilePDFName.name : ''}
                         accept="application/pdf"
                         label="Escolher PDF"
                       />
