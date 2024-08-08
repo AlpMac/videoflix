@@ -200,6 +200,7 @@ export default function CadastrarVideo() {
         id_categoria: selectedCategoryId,
         thumbnail: videoThumbnail,
         pdf: videoPDF,
+        usuarioLogado: usuarioLogado,
       });
 
       setModalMessage("Vídeo enviado com sucesso!");

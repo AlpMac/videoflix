@@ -150,6 +150,8 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
                     </Typography>
                   </IconButton>
                 </CardActions>
+                
+                {video.id_enviado === usuarioLogado ? (
                 <Button 
                   variant="contained" 
                   endIcon={<SettingsIcon />}
@@ -158,11 +160,11 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
                     width: '100%',
                     marginTop: 'auto',
                     marginBottom: '10px',
-                    
                   }}
                 >
                   Editar Informações
                 </Button>
+              ) : null}
               </Card>
             </Grid>
           ))
