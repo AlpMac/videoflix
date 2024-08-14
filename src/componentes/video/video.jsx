@@ -19,9 +19,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../services/api.js';
-import { servidorBackendPlayVideo, servidorBackendEnviosImagemPerfil, servidorBackendDownloadArquivos, servidorBackendEnviosThumbnail } from '../../utils/global.js';
+import { servidorBackendPlayVideo,servidorBackendPdf, servidorBackendEnviosImagemPerfil, servidorBackendDownloadArquivos, servidorBackendEnviosThumbnail } from '../../utils/global.js';
+import PDFViewer from '../../componentes/PdfViewer/PdfViewer.jsx';
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
+  
 
 export default function Video() {
+
+    
     const Item = styled(Grid)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
@@ -95,12 +105,17 @@ export default function Video() {
                                 title={listaVideo.tratamento_formal + " " + listaVideo.nome_apelido}
                                 subheader={listaVideo.local_trabalho}
                             />
+                            {listaVideo.url_video && listaVideo.url_video.endsWith('.pdf') ?  (
+                              <PDFViewer pdfUrl={`${servidorBackendPdf}${listaVideo.url_video}`} />
+ 
+                            ) : 
+
                             <ReactPlayer
                                 url={`${servidorBackendPlayVideo}${listaVideo.url_video}`}
                                 width='100%'
                                 height='400px'
                                 controls={true}
-                            />
+                            />}
                             <CardContent>
                                 <Typography variant="h5" component="div">
                                     {listaVideo.titulo_video}

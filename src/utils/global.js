@@ -19,6 +19,7 @@ export const servidorBackendEnviosThumbnail = urlSistema+"envios_thumbnail/";
 export const servidorBackendEnviosImagemPerfil = urlSistema+"envios_imagemPerfil/";
 export const servidorBackendPlayVideo = urlSistema+"play_video/";
 export const servidorBackendDownloadArquivos = urlSistema+"download_arquivo/";
+export const servidorBackendPdf  = urlSistema+"ver_pdf/";
 export const usuarioLogado = 1 ;
 export const usuariosAdmin = [1,2,3,4,5,6,7,8,9,10];
 

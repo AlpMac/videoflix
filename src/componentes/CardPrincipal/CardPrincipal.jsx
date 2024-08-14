@@ -19,6 +19,7 @@ import './CardPrincipal.css';
 import { servidorBackendEnviosThumbnail, servidorBackendEnviosImagemPerfil, usuarioLogado } from '../../utils/global.js';
 import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
   const [listaVideos, setListaVideos] = useState([]);
@@ -117,9 +118,17 @@ const CardPrincipal = ({ canalId, favorito, categoriaId, caminho }) => {
                     >
                       {video.titulo_video}
                     </Typography>
+                   
+
                   }
                   subheader={`${video.tratamento_formal} ${video.nome_apelido}`}
                 />
+               {/* {video.thumbnail.endsWith('.pdf') ? (
+                  <Button variant="contained" disabled endIcon={<PictureAsPdfIcon />}>
+                  Arquivo PDF
+                </Button>
+                ) : null}*/}
+
                 <CardMedia
                   sx={{ maxWidth: 345, cursor: 'pointer' }}
                   onClick={() => openVideo(video.id_video)}
