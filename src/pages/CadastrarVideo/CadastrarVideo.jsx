@@ -80,18 +80,8 @@ export default function CadastrarVideo() {
   // Função para lidar com o clique do botão de seleccao de video ou pdf
   const handleButtonClick = (buttonType) => {
     setSelectedButton(buttonType);
-    // Aqui você pode adicionar a lógica para cada botão
-    if (buttonType === 'video') {
-      console.log('Enviar Vídeo');
-      // Executar lógica para enviar vídeo
-    } else if (buttonType === 'pdf') {
-      console.log('Enviar PDF');
-      // Executar lógica para enviar PDF
-    }
+   
   };
-
-
-
   
   const navigate = useNavigate();
 
@@ -108,9 +98,22 @@ export default function CadastrarVideo() {
       if (id) {
       api.get(`/video/${id}`)
         .then((response) => {
+          if (response.data.url_video.endsWith('.pdf')) {
+            handleButtonClick("pdf");
+            document.querySelector('button[name="video"]').style.display = 'none';
+            document.querySelector('button[name="pdf"]').disabled = true;
+          } else {
+            handleButtonClick("video");
+            document.querySelector('button[name="pdf"]').style.display = 'none';
+            document.querySelector('button[name="video"]').disabled = true;
+          }
           prevSelectedFileName.current = response.data.url_video;
           prevSelectedFileNameThumbnail.current = response.data.thumbnail;
           prevSelectedFileNamePDF.current = response.data.arquivos_complementares;
+          //Verificacao necessaria pois por default vem 0 
+          const arquivosComplementares = response.data.arquivos_complementares;
+          const fileName = arquivosComplementares === 0 ? '' : arquivosComplementares;
+
           setVideoId(response.data.id_video);
           setVideoTitle(response.data.titulo_video);
           setVideoDescription(response.data.descricao_video);
@@ -120,9 +123,9 @@ export default function CadastrarVideo() {
           setSelectedFileName(response.data.url_video);
           setSelectedFileThumbnail({ name: response.data.thumbnail });
           setSelectedFileNameThumbnail(response.data.thumbnail);
-          setSelectedFilePDF(response.data.arquivos_complementares);
-          setSelectedFilePDFName({ name : response.data.arquivos_complementares}); // Atualize isso
-          
+          setSelectedFilePDF({ name: fileName});
+          setSelectedFilePDFName({ name: fileName });
+          console.log(selectedFilePDFName)          ;
         })
         .catch((err) => {
           console.error("Erro ao buscar dados do video para edição:", err);
@@ -206,7 +209,7 @@ export default function CadastrarVideo() {
     formData.append('title', videoTitle);
     formData.append('description', videoDescription);
     formData.append('categoryId', selectedCategoryId);
-    formData.append('filepdf', selectedFilePDF);
+    formData.append('filepdf', selectedFilePDFName);
 
     }
 
@@ -264,7 +267,7 @@ export default function CadastrarVideo() {
       setActiveStep(steps.length); // Mover para a etapa final
     } catch (error) {
       console.error('Erro ao enviar o arquivo:', error);
-      setModalMessage('Ocorreu um erro ao enviar o arquivo.');
+      setModalMessage('Ocorreu um erro ao enviar o arquivo, ou nenhum dado foi alterado');
       setOpenModal(true);
     } finally {
       setLoading(false);
@@ -273,16 +276,34 @@ export default function CadastrarVideo() {
   };
 
   const handleUpdate = async () => {
+    const filenameAntigo = prevSelectedFileName.current;
+    const filenameThumbnailAntigo = prevSelectedFileNameThumbnail.current;
+    const filenamePDFAntigo = prevSelectedFileNamePDF.current;
+
+    const formData = new FormData();
+    
     if (selectedButton === 'pdf') {
       if (!selectedFilePDFName || !videoTitle || !videoDescription || !selectedCategoryId) {
         setModalMessage("Preencha todos os campos antes de enviar.");
         setOpenModal(true);
+        
+        console.log("selectedFilePDFname"+ selectedFilePDFName);
+
+      if (selectedFilePDFName && prevSelectedFileNamePDF.current !== selectedFilePDFName.name) {
+        formData.append('file', selectedFilePDFName);
+      }
+      
         return;
       }  
     }else{
       if ((!selectedFile && !selectedFileThumbnail ) || !videoTitle || !videoDescription || !selectedCategoryId) {
         setModalMessage("Preencha todos os campos antes de enviar.");
         setOpenModal(true);
+        
+      if (selectedFile && prevSelectedFileName.current !== selectedFile.name) {
+        formData.append('file', selectedFile);
+      }
+
         return;
       } 
     }
@@ -293,15 +314,7 @@ export default function CadastrarVideo() {
     setLoadingMessage('Atualizando vídeo...');
 
     try {
-      const filenameAntigo = prevSelectedFileName.current;
-      const filenameThumbnailAntigo = prevSelectedFileNameThumbnail.current;
-      const filenamePDFAntigo = prevSelectedFileNamePDF.current;
-
-      const formData = new FormData();
-
-      if (selectedFile && prevSelectedFileName.current !== selectedFile.name) {
-        formData.append('file', selectedFile);
-      }
+     
 
       if (selectedFileThumbnail && prevSelectedFileNameThumbnail.current !== selectedFileThumbnail.name) {
         formData.append('filethumbnail', selectedFileThumbnail);
@@ -311,7 +324,11 @@ export default function CadastrarVideo() {
         formData.append('filepdf', selectedFilePDFName);
       }
 
+
+    
       if (formData.has('file') || formData.has('filethumbnail') || formData.has('filepdf')) {
+       
+       
         const response = await api.post('/enviar-video', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -344,7 +361,14 @@ export default function CadastrarVideo() {
           videoPDFUpdate = selectedFilePDF.name;
         } else if (videoVeioUpdate === "0" && thumbnailVeioUpdate === "0" && pdfVeioUpdate !== "0") {
           videoPDFUpdate = pdfVeioUpdate;
-          videoUrlUpdate = selectedFile.name;
+          if (selectedButton === 'pdf')
+          {
+             videoUrlUpdate = pdfVeioUpdate;
+          }
+          else
+          {
+            videoUrlUpdate = selectedFile.name;
+          }
           videoThumbnailUpdate = selectedFileThumbnail.name;
         } else if (videoVeioUpdate !== "0" && thumbnailVeioUpdate !== "0" && pdfVeioUpdate === "0") {
           videoUrlUpdate = videoVeioUpdate;
@@ -369,7 +393,7 @@ export default function CadastrarVideo() {
       }
     } catch (error) {
       console.error('Erro ao atualizar o vídeo:', error);
-      setModalMessage('Ocorreu um erro ao atualizar o vídeo.');
+      setModalMessage('Ocorreu um erro ao atualizar o vídeo, ou nada foi atualizado');
       setOpenModal(true);
     } finally {
       setLoading(false);
@@ -458,6 +482,7 @@ const steps = [];
           <><Container maxWidth='xl'>
           <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 10, gap: 1 }}>
             <Button
+              name ="video"
               variant={selectedButton === 'video' ? 'contained' : 'outlined'}
               startIcon={<OndemandVideoIcon />}
               onClick={() => {
@@ -468,6 +493,7 @@ const steps = [];
               Enviar Vídeo
             </Button>
             <Button
+              name ="pdf"
               variant={selectedButton === 'pdf' ? 'contained' : 'outlined'}
               endIcon={<PictureAsPdfIcon />}
               onClick={() => {

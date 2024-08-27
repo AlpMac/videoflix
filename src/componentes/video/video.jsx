@@ -19,9 +19,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../services/api.js';
-import { servidorBackendPlayVideo,servidorBackendPdf, servidorBackendEnviosImagemPerfil, servidorBackendDownloadArquivos, servidorBackendEnviosThumbnail } from '../../utils/global.js';
+import { servidorBackendPlayVideo,servidorBackendPdf,usuarioLogado, servidorBackendEnviosImagemPerfil, servidorBackendDownloadArquivos, servidorBackendEnviosThumbnail } from '../../utils/global.js';
 import PDFViewer from '../../componentes/PdfViewer/PdfViewer.jsx';
 import { pdfjs } from 'react-pdf';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -42,6 +45,10 @@ export default function Video() {
     const { id } = useParams();
     const [listaVideo, setlistaVideo] = useState({});
     const [listaComplemento, setlistaComplemento] = useState([]);
+    const [isFavorito, setIsFavorito] = useState(listaVideo.favorito);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [open, setOpen] = useState(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +57,7 @@ export default function Video() {
                 const videoResponse = await api.get(`/video/${id}`);
                 const videoData = videoResponse.data;
                 setlistaVideo(videoData);
+                setIsFavorito(videoData.curtido);
                 
                 // Em seguida, obtemos os dados da categoria, se disponível
                 if (videoData && videoData.id_categoria) {
@@ -74,8 +82,9 @@ export default function Video() {
         navigate(`/video/${id}`);
     };
 
-    const arquivosArray = listaVideo.arquivos_complementares ? listaVideo.arquivos_complementares.split(', ') : [];
-
+    const arquivosArray = listaVideo.arquivos_complementares && listaVideo.arquivos_complementares !== '0' 
+    ? listaVideo.arquivos_complementares.split(', ') 
+    : [];
     const handleDownload = async (arquivo) => {
         const response = await fetch(`${servidorBackendDownloadArquivos}${arquivo}`);
         const blob = await response.blob();
@@ -87,6 +96,48 @@ export default function Video() {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+    };
+
+   
+      
+    const handleFavoriteClick = async () => {
+        const newFavorito = !isFavorito;
+        setIsFavorito(newFavorito);
+    
+        try {
+            const route = newFavorito ? '/salvar-favorito' : '/deletar-favorito';
+            let response;  // Use "let" para permitir reatribuição
+            
+            console.log("route: " + route);
+            
+            if (route === '/deletar-favorito') {
+                response = await api.delete(route, {
+                    data: {
+                        id_video: listaVideo.id_video,
+                        id_logado: usuarioLogado,
+                    }
+                });
+            } else {
+                response = await api.post(route, {
+                    id_video: listaVideo.id_video,
+                    id_logado: usuarioLogado,
+                    curtido: newFavorito,
+                });
+            }
+    
+            if (response && response.data.message) {
+                setSuccessMessage(response.data.message);
+                setOpen(true);
+            }
+        } catch (err) {
+            console.error('Erro ao atualizar favorito:', err);
+            // Reverter o estado se a requisição falhar
+            setIsFavorito(!newFavorito);
+        }
+    };         
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     return (
@@ -105,10 +156,14 @@ export default function Video() {
                                 title={listaVideo.tratamento_formal + " " + listaVideo.nome_apelido}
                                 subheader={listaVideo.local_trabalho}
                             />
-                            {listaVideo.url_video && listaVideo.url_video.endsWith('.pdf') ?  (
-                              <PDFViewer pdfUrl={`${servidorBackendPdf}${listaVideo.url_video}`} />
- 
-                            ) : 
+                             
+                            {listaVideo.url_video && listaVideo.url_video.endsWith('.pdf') ? 
+                            (
+                                <Grid container justifyContent="center" alignItems="center" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                <PDFViewer pdfUrl={`${servidorBackendPdf}${listaVideo.url_video}`} />
+                              </Grid>
+                                
+                            )  : 
 
                             <ReactPlayer
                                 url={`${servidorBackendPlayVideo}${listaVideo.url_video}`}
@@ -125,10 +180,12 @@ export default function Video() {
                                 </Typography>
                             </CardContent>
                             <CardActions style={{ display: 'flex', alignItems: 'center' }}>
-                                <IconButton aria-label="add to favorites" align='left'>
+                                <IconButton aria-label="add to favorites" align='left'
+                                 onClick={handleFavoriteClick}>
                                     <FavoriteIcon
                                         label="Favorito"
-                                        style={{ color: listaVideo.favorito ? 'red' : 'inherit' }}
+                                        style={{ color: isFavorito ? 'red' : 'inherit' }}
+                                       
                                     />
                                 </IconButton>
                                 <IconButton aria-label="share" align='left'>
@@ -158,6 +215,22 @@ export default function Video() {
                                 </Typography>
                             </CardContent>
                         </Card>
+                        {successMessage && (
+                             <>
+                             <Stack sx={{ width: '100%', paddingTop: '20px' }} spacing={2}>
+                                 <Snackbar
+                                     open={open}
+                                     autoHideDuration={2000}
+                                     onClose={handleClose}
+                                 >
+                                     <Alert onClose={handleClose} severity="success">
+                                         {successMessage}
+                                     </Alert>
+                                 </Snackbar>
+                             </Stack>
+                             {/* Resto do seu componente */}
+                         </>
+                        )}
                     </Grid>
 
                     <Grid item xs={12} md={4}>

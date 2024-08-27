@@ -32,13 +32,13 @@ function Rotas(props){
                 <Route path="/categoria/:id_categoria" element={<Home />} />
                
                  
-                <Route path="/cadastrar-video" element={<CadastrarVideo />} />
+                <Route path="/cadastrar-video" element={<CadastrarVideo key="cadastrar" />} />
                 <Route path="/video/:id" element={<Video />} />          {/*link1="Seus Videos" link2=' ' usaremos depois para barra infinita*/ }  
                 <Route path="/meus-videos/:id_usuario" element={<MeusVideos />  } />
                 <Route path="/meus-videos-favoritos/:id_usuario" element={<MeusVideosFavoritos />} />
                 <Route path="/listar_canais" element={<VerCanais />} />
                 {/* AREA ADMIN */}
-                <Route path="/video/editar/:id" element={<CadastrarVideo />} />
+                <Route path="/video/editar/:id" element={<CadastrarVideo key="editar" />} />
                 </Routes>
                 </Container> 
 

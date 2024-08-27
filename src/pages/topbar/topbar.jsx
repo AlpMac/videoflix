@@ -24,9 +24,17 @@ import MenuCategoria from '../../componentes/menuCategorias/menuCategoria.jsx';
 import BotoesDeNavegacao from '../../componentes/BotoesDeNavegacao/BotoesDeNavegacao.jsx';
 import Logotipo from '../../componentes/logotipo/logotipo.jsx';
 import CloseIcon from '@mui/icons-material/Close';
+import NotificationPopup from '../../componentes/notificacaPopUp/notificacaoPopUp.jsx'
+import {  servidorBackendEnviosImagemPerfil } from '../../utils/global.js';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import LockIcon from '@mui/icons-material/Lock';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import {ListItemIcon } from '@mui/material';
+
+//buscar depois do banco
 const arrayPerfil = {
-  fotoPerfil: 'url_da_foto_perfil',
-  nome: 'Nome do Usuário',
+  fotoPerfil: '031b68882265722dede1080a200f015a.jpg',
+  nome: '3SG-PD ALPANDE',
 };
 
 export default function PrimarySearchAppBar() {
@@ -77,7 +85,7 @@ export default function PrimarySearchAppBar() {
   const handleModalClose = () => {
     setOpenModal(false);
   };
-
+   // Componente de Menu usuario 
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -87,30 +95,47 @@ export default function PrimarySearchAppBar() {
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={Boolean(anchorEl)}
       onClose={handleMenuClose}
+      sx={{ mt: 1, boxShadow: 3 }}
     >
       <MenuItem>
-        <img
-          src={arrayPerfil.fotoPerfil}
-          alt="Perfil"
-          style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            marginRight: '10px',
-          }}
-        />
-        {arrayPerfil.nome}
+        <ListItemIcon>
+          <Avatar
+            src={`${servidorBackendEnviosImagemPerfil}${arrayPerfil.fotoPerfil}`}
+            alt="Perfil"
+            sx={{ width: 50, height: 50, mr: 2 }}
+          />
+        </ListItemIcon>
+        <Typography variant="inherit" noWrap>
+          {arrayPerfil.nome}
+        </Typography>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Alterar foto</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Alterar senha</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sair</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <PhotoCameraIcon fontSize="small" />
+        </ListItemIcon>
+        <Typography variant="inherit">Alterar foto</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <LockIcon fontSize="small" />
+        </ListItemIcon>
+        <Typography variant="inherit">Alterar senha</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <ExitToAppIcon fontSize="small" />
+        </ListItemIcon>
+        <Typography variant="inherit">Sair</Typography>
+      </MenuItem>
     </Menu>
+
   );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar>
+          {/*Butao do Menu*/ }
           <IconButton
             size="large"
             edge="start"
@@ -121,19 +146,25 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
             
-          </IconButton>      <Logotipo />
-
+          </IconButton>
+          {/*Icone logotipo*/}
+          <Logotipo />
+          {/*Espacamento necessario */}
           <Box sx={{ flexGrow: 1 }} />
+          
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          {/*Icone de Mensagem Sino  FAZER DEPOIS 
             <IconButton
               size="large"
-              aria-label="show 4 new mails"
+              aria-label="Novas Mensagens"
               color="inherit"
             >
               <Badge badgeContent={5} color="error">
-                <MailIcon />
+              <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton>*/} 
+            
+            {/*Icone de atualização carta */}
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -141,9 +172,10 @@ export default function PrimarySearchAppBar() {
               onClick={handleNotificationsClick}
             >
               <Badge badgeContent={listaNotificacao.length} color="error">
-                <NotificationsIcon />
+                <MailIcon />
               </Badge>
             </IconButton>
+            {/*Icone do avatar do usuario */}
             <IconButton
               size="large"
               edge="end"
@@ -152,12 +184,17 @@ export default function PrimarySearchAppBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <Avatar src={arrayPerfil.fotoPerfil} alt="Ícone do Canal" />
+              <Avatar 
+              src={`${servidorBackendEnviosImagemPerfil}${arrayPerfil.fotoPerfil}`}
+              alt="Ícone do Usuario" />
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/*Render Menu é o componente quando clicar no avatar vai abrir*/}
       {renderMenu}
+      {/**Este elemento é o popup que abre assim que clica no icone de Carta */}
       <Popover
         open={Boolean(notificationsAnchorEl)}
         anchorEl={notificationsAnchorEl}
@@ -171,23 +208,26 @@ export default function PrimarySearchAppBar() {
           horizontal: 'right',
         }}
       >
-        <Box sx={{ p: 2 }}>
-          {listaNotificacao.map((notification, id) => (
-            <Box key={id} sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2 }}>
-              <Avatar src={arrayPerfil.fotoPerfil} sx={{ mr: 2 }} />
-              <Box>
-                <Typography>{notification.notificacao}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Enviado por: TESTE
-                </Typography>
-                <Button variant="contained" size="small" endIcon={<AnnouncementIcon />}>
-                  Ler
-                </Button>
-              </Box>
-            </Box>
-          ))}
-        </Box>
+      <Box sx={{ p: 2, borderRadius: 2, boxShadow: 3, bgcolor: 'background.paper' }}>
+        <Typography gutterBottom variant="h6">
+          Mensagem do Administrador do Sistema
+        </Typography>
+      <Divider sx={{marginBottom:2}}/>
+         {listaNotificacao.map((notification, id) => (
+          
+          <NotificationPopup
+          key ={id} 
+          id = {id}
+          notification={notification.notificacao} 
+          tratamentoFormal={notification.tratamento_formal} 
+          nomeApelido={notification.nome_apelido}
+          urlPerfil = {notification.url_perfil}    
+          />
+        ))}
+      </Box>
       </Popover>
+
+      {/*Este é o Menu que abre a esquerda com as opções de navegacao */}
       <Drawer
         sx={{
           width: 240,

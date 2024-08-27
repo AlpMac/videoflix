@@ -41,7 +41,7 @@ export default function BotoesDeNavegacao({ onClose }) {
                 paddingTop :'2px',
                 fontSize: '6px', // Tamanho da fonte ajustado
                 backgroundColor: 'transparent', // Remove o fundo cinza
-                border: 'none', // Remove a borda
+                border: 'none',paddingLeft : '0px', // Remove a borda
                 '&:hover': {
                   backgroundColor: 'rgba(0, 0, 0, 0.04)', // Cor de fundo ao passar o mouse
                 },
